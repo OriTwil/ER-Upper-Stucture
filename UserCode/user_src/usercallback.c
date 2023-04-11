@@ -1,7 +1,7 @@
 /*
  * @Author: szf
  * @Date: 2023-03-30 16:29:58
- * @LastEditTime: 2023-03-30 20:04:45
+ * @LastEditTime: 2023-04-02 23:54:26
  * @LastEditors: szf
  * @Description: 
  * @FilePath: \ER-Upper-Stucture\UserCode\user_src\usercallback.c
@@ -37,7 +37,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     else if (huart->Instance == USART1)
     {
         AS69_Decode(); // AS69解码
-        HAL_UART_Transmit(&huart8, JoyStickReceiveData, 18,100);
+        HAL_UART_Transmit(&huart6, JoyStickReceiveData, 18,100);
     }
 }
 

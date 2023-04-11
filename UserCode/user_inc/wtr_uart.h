@@ -43,6 +43,7 @@ extern float vx, vy, vw;
 extern underpan_speed crl_speed;
 extern Posture posture;
 extern uint8_t ch[1]; // 不确定是不是static
+extern double angMax;
 
 void AS69_Decode();
 void OPS_Decode();

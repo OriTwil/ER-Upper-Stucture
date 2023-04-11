@@ -1,14 +1,14 @@
 /*
  * @Author: szf
  * @Date: 2023-03-08 19:12:32
- * @LastEditTime: 2023-04-02 13:34:20
+ * @LastEditTime: 2023-04-02 14:41:33
  * @LastEditors: szf
  * @Description:
  * @FilePath: \ER-Upper-Stucture\UserCode\user_src\pick_up.c
  * @WeChat:szf13373959031
  */
 #include "pick_up.h"
-
+#include "wtr_uart.h"
 Button button = {
     .button_min_time = 500,
     .last_tick       = 0,
@@ -140,7 +140,7 @@ void PickUpTestTask(void const *argument)
 					}
 					break;
 				case Extend:
-					if(hDJI[4].posPID.fdb > ExtendAngle - 1)
+					if(angMax==90)
 					{
 						Pickup_mode = Claw_extend;
 						osDelay(1);

@@ -46,7 +46,7 @@ void StartDefaultTask(void const *argument)
 	// CtrlDataSender_Start(&ControllerData);// 遥控器线程
     ServoTaskStart(&ControllerData);
     PickUpTaskStart(&ControllerData);// 取环线程
-    FireTaskStart(&ControllerData);// 射换线程
+    // FireTaskStart(&ControllerData);// 射换线程
     
     for (;;) {
         osDelay(1);
