@@ -17,7 +17,7 @@
  * @copyright Copyright (c) 2022
  * 
  */
-#include "ctrl_data_sender.h"
+#include "communicate.h"
 
 mavlink_channel_t CtrlDataSendChan = 0;
 

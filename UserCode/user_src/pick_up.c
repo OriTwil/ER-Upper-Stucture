@@ -9,188 +9,106 @@
  */
 #include "pick_up.h"
 #include "wtr_uart.h"
+#include "state_manage.h"
 Button button = {
     .button_min_time = 500,
     .last_tick       = 0,
 };
-bool Pickup_state = Finished;
-Mode Pickup_mode = Motionless;
 
 void PickUpTask(void const *argument)
 {
-    const mavlink_controller_t *ctrl_data = argument;
     osDelay(200);
 
-    for (;;) 
-	{
-        if (ctrl_data->buttons & (1 << 6)) 
-		{
-            if (button.last_tick + button.button_min_time < HAL_GetTick()) 
-			{
-                button.last_tick = HAL_GetTick();
-				Pickup_state = Ongoing;
-				Pickup_mode = Overturn;
-        	}
-    	}
+    for (;;) {
+        switch (Upper_state.Pickup_state) {
+            case Ready:
 
-		if(Pickup_state == Finished)
-		{
-			CanTransmit_DJI_5678(&hcan1,
-					hDJI[4].speedPID.output,
-					hDJI[5].speedPID.output,
-					hDJI[6].speedPID.output,
-					hDJI[7].speedPID.output);
-		}
-		else if(Pickup_state == Ongoing) // 开始取环
-		{
-			// 取环
-			switch(Pickup_mode)
-			{
-				case Motionless:
-					Pickup_state = Finished;  
+                break;
+            case Pickup:
+                SetServoRefFire(0, 0, &Pickup_ref);
+				SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Initial, ClawAngle_Initial, &Pickup_ref);
+                // 取环
+                switch (Upper_state.Pickup_step) {
+                    case Overturn:
+                        SetServoRefOverturnTrajectory(OverturnAngle, &Pickup_ref);
+                        if (hDJI[Motor_Overturn_id].posPID.fdb < OverturnAngle) {
+                            PickupSwitchStep(Extend, &Pickup_ref);
+                        }
+                        break;
+                    case Extend:
+                        SetServoRefPickup(OverturnAngle, ExtendAngle, ClawAngle_Initial, &Pickup_ref);
+                        if (hDJI[Motor_Extend_id].posPID.fdb > ExtendAngle) {
+                            PickupSwitchStep(Claw_extend, &Pickup_ref);
+                        }
+                        break;
+                    case Claw_extend:
+                        SetServoRefPickup(OverturnAngle, ExtendAngle, ClawAngle, &Pickup_ref);
+                        if (hDJI[Motor_Claw_id].posPID.fdb > ClawAngle) {
+                            PickupSwitchStep(Retract, &Pickup_ref);
+                        }
+                        break;
+                    case Retract:
+                        SetServoRefPickup(OverturnAngle, ExtendAngle_10, ClawAngle, &Pickup_ref);
+                        if (hDJI[Motor_Extend_id].posPID.fdb < ExtendAngle_10) {
+                            PickupSwitchStep(Overturn_back, &Pickup_ref);
+                        }
+                        break;
+                    case Overturn_back:
+                        SetServoRefOverturnTrajectory(ExtendAngle_10, &Pickup_ref);
+                        if (hDJI[Motor_Overturn_id].posPID.fdb > OverturnAngle_Initial) {
+                            PickupSwitchStep(Claw_retract, &Pickup_ref);
+                        }
+                        break;
+                    case Claw_retract:
+                        SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_10, ClawAngle_Initial, &Pickup_ref);
+                        if (hDJI[Motor_Claw_id].posPID.fdb < ClawAngle_Initial) {
+                            PickupSwitchState(Ready, &Upper_state);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case Fire:
+				switch(Upper_state.Fire_number)
+				{
+					case First_Target:
+					SetServoRefPickup(OverturnAngle_Initial,ExtendAngle_10,ClawAngle_Initial,&Pickup_ref);
 					break;
-				case Overturn:
-					if(hDJI[5].posPID.fdb > OverturnAngle - 1)
-					{
-						Pickup_mode = Extend;
-						osDelay(20);
-					}
+					case Second_Target:
 					break;
-				case Extend:
-					if(hDJI[4].posPID.fdb > ExtendAngle - 1)
-					{
-						Pickup_mode = Claw_extend;
-						osDelay(20);
-					}
+					case Third_Target:
 					break;
-				case Claw_extend:
-					if(hDJI[6].posPID.fdb > ClawAngle + 1)
-					{
-						Pickup_mode = Retract;
-						osDelay(20);
-					}
+					case Fourth_Target:
 					break;
-				case Retract:
-					if(hDJI[4].posPID.fdb < 1)
-					{
-						Pickup_mode = Overturn_back;
-						osDelay(20);
-					}
+					case Fifth_Target:
 					break;
-				case Overturn_back:
-					if(hDJI[5].posPID.fdb < 1)
-					{
-						Pickup_mode = Claw_retract;
-						osDelay(20);
-					}
+					case Sixth_Target:
 					break;
-				case Claw_retract:
-					if(hDJI[6].posPID.fdb < 1)
-					{
-						Pickup_state = Finished;
-					} 
+					case Seven_Target:
 					break;
-					
-			}
-			CanTransmit_DJI_5678(&hcan1,
-					hDJI[4].speedPID.output,
-					hDJI[5].speedPID.output,
-					hDJI[6].speedPID.output,
-					hDJI[7].speedPID.output);
-		}
-		osDelay(1);
-	}
+					case Eight_Target:
+					break;
+				}
+                break;
+        }
+
+        CanTransmit_DJI_5678(&hcan1,
+                             hDJI[4].speedPID.output,
+                             hDJI[5].speedPID.output,
+                             hDJI[6].speedPID.output,
+                             hDJI[7].speedPID.output);
+        osDelay(1);
+    }
 }
 
 void PickUpTestTask(void const *argument)
 {
-	PickUpInit();//取环机构初始化
+    PickUpInit(); // 取环机构初始化
     osDelay(20);
-
-	Pickup_state = Ongoing;
-	Pickup_mode = Overturn;
-    for (;;) 
-	{
-		// if(Raw_Data.wheel < -550)
-		// {
-		// 	Pickup_state = Ongoing;
-		// 	Pickup_mode = Overturn;
-		// }
-		if(Pickup_state == Finished)
-		{
-			CanTransmit_DJI_5678(&hcan1,
-					hDJI[4].speedPID.output,
-					hDJI[5].speedPID.output,
-					hDJI[6].speedPID.output,
-					hDJI[7].speedPID.output);
-		}
-		else if(Pickup_state == Ongoing) // 开始取环
-		{
-			// 取环
-			switch(Pickup_mode)
-			{
-				case Motionless:
-					Pickup_state = Finished;  
-					break;
-				case Overturn:
-					if(hDJI[5].posPID.fdb < OverturnAngle + 1)
-					{
-						Pickup_mode = Extend;
-						osDelay(1);
-					}
-					break;
-				case Extend:
-					if(angMax==90)
-					{
-						Pickup_mode = Claw_extend;
-						osDelay(1);
-					}
-					break;
-				case Claw_extend:
-					if(hDJI[6].posPID.fdb < ClawAngle + 1)
-					{
-						Pickup_mode = Retract;
-						osDelay(1);
-					}
-					break;
-				case Retract:
-					if(hDJI[4].posPID.fdb < 2000)
-					{
-						Pickup_mode = Overturn_back;
-						osDelay(1);
-					}
-					break;
-				case Overturn_back:
-					if(hDJI[5].posPID.fdb > 180)
-					{
-						Pickup_mode = Claw_retract;
-						osDelay(2);
-					}
-					break;
-				case Claw_retract:
-					if(hDJI[6].posPID.fdb > -1)
-					{
-						Pickup_state = Finished;
-						osDelay(1);
-					} 
-					break;
-			}
-			CanTransmit_DJI_5678(&hcan1,
-					hDJI[4].speedPID.output,
-					hDJI[5].speedPID.output,
-					hDJI[6].speedPID.output,
-					hDJI[7].speedPID.output);
-		}
-		static int led_count = 0;
-		if(led_count++ > 100)
-		{
-			led_count = 0;
-			HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_14);
-		}
-		osDelay(1);
-	}
-	
-
+    for (;;) {
+        vTaskDelay(20);
+    }
 }
 
 void PickUpTaskStart(mavlink_controller_t *controldata)

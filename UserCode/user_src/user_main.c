@@ -4,7 +4,7 @@
  * @LastEditTime: 2023-02-22 19:27:40
  * @LastEditors: szf
  * @Description: ER
- * @FilePath: \ER\Usercode\user_src\usermain.c
+ * @FilePath: \ER\Usercode\user_src\user_main.c
  * @WeChat:szf13373959031
  **/
 
@@ -13,18 +13,16 @@
 #include "dma.h"
 #include "usart.h"
 #include "gpio.h"
-#include "Caculate.h"
+#include "user_calculate.h"
 #include "wtr_can.h"
-#include "DJI.h"
+#include "wtr_dji.h"
 #include <math.h>
 #include "main.h"
-#include "usermain.h"
-#include "ctrl_data_sender.h"
-#include "beep.h"
+#include "user_main.h"
 #include "pick_up.h"
 #include "servo.h"
 #include "wtr_uart.h"
-#include "usercallback.h"
+#include "user_callback.h"
 
 // 变量定义
 mavlink_controller_t ControllerData = {0};

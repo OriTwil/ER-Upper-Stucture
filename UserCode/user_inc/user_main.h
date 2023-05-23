@@ -17,18 +17,17 @@
 #include "dma.h"
 #include "usart.h"
 #include "gpio.h"
-#include "Caculate.h"
+#include "user_calculate.h"
 #include "wtr_can.h"
-#include "DJI.h"
+#include "wtr_dji.h"
 #include <math.h>
 #include "main.h"
 #include "wtr_mavlink.h"
-#include "ctrl_data_sender.h"
-#include "beep.h"
+#include "user_config.h"
 #include "servo.h"
 #include "pick_up.h"
 #include "wtr_uart.h"
-#include "usercallback.h"
+#include "user_callback.h"
 
 extern mavlink_controller_t ControllerData;
 

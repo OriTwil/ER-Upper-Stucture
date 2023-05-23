@@ -14,7 +14,7 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "usart.h"
-#include "usermain.h"
+#include "user_main.h"
 
 void CtrlDataSender_Init(UART_HandleTypeDef *huart, mavlink_channel_t chan);
 

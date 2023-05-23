@@ -47,4 +47,52 @@
 #define M_LOG2_E        _M_LN2
 #define M_INVLN2        1.4426950408889633870E0  /* 1 / log(2) */
 
+/**
+ * @brief id
+ * 
+ */
+#define VESC_Left_id 0x01
+#define VESC_Right_id 0x02
+
+
+#define Motor_Pitch_id 0
+#define Motor_Yaw_id 1
+#define Motor_Push_id 2
+#define Motor_pass_id 3 
+#define Motor_Overturn_id 4
+#define Motor_Extend_id 5
+#define Motor_Claw_id 6
+
+/**
+ * @brief 参数
+ * 
+ */
+// 电机的最大角速度 角加速度
+#define MaxAngularVelocity_Pitch 10
+#define MaxAngularVelocity_Yaw   10
+#define MaxAngularVelocity_Overturn 10
+
+#define MotorAngularAcceleration 10
+
+
+#define OverturnAngle_Initial 0
+#define ExtendAngle_Initial 0 //todo 需要确定每次初始位置都一样
+#define ClawAngle_Initial 0
+
+#define OverturnAngle -729
+#define ExtendAngle 5200
+#define ExtendAngle_10 5000
+#define ExtendAngle_9 4800
+#define ExtendAngle_8 4600
+#define ExtendAngle_7 4400
+#define ExtendAngle_6 4200
+#define ExtendAngle_5 4000
+#define ExtendAngle_4 3800
+#define ExtendAngle_3 3600
+#define ExtendAngle_2 3400
+#define ExtendAngle_1 3200
+#define ClawAngle -36
+
+#define ExtendAngle_Retract 2000
+
 

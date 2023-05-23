@@ -4,12 +4,12 @@
 #define MAVLINK_MSG_ID_Controller 1
 
 
-typedef struct __mavlink_controller_t {
- int16_t left_x; /*<  ×óÒ¡¸Ëx,0ÎªÔ­µã,ÏòÓÒÎªÕý*/
- int16_t left_y; /*<  ×óÒ¡¸Ëy,0ÎªÔ­µã,ÏòÉÏÎªÕý*/
- int16_t right_x; /*<  ÓÒÒ¡¸Ëx,0ÎªÔ­µã,ÏòÓÒÎªÕý*/
- int16_t right_y; /*<  ÓÒÒ¡¸Ëy,0ÎªÔ­µã,ÏòÉÏÎªÕý*/
- uint8_t buttons; /*<  °´Å¥,´ÎÐò:76543210*/
+typedef __IO struct __mavlink_controller_t {
+ int16_t left_x; /*<  å·¦æ‘‡æ†x,0ä¸ºåŽŸç‚¹,å‘å³ä¸ºæ­£*/
+ int16_t left_y; /*<  å·¦æ‘‡æ†y,0ä¸ºåŽŸç‚¹,å‘ä¸Šä¸ºæ­£*/
+ int16_t right_x; /*<  å³æ‘‡æ†x,0ä¸ºåŽŸç‚¹,å‘å³ä¸ºæ­£*/
+ int16_t right_y; /*<  å³æ‘‡æ†y,0ä¸ºåŽŸç‚¹,å‘ä¸Šä¸ºæ­£*/
+ uint8_t buttons; /*<  æŒ‰é’®,æ¬¡åº:76543210*/
 } mavlink_controller_t;
 
 #define MAVLINK_MSG_ID_Controller_LEN 9
@@ -53,11 +53,11 @@ typedef struct __mavlink_controller_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param left_x  ×óÒ¡¸Ëx,0ÎªÔ­µã,ÏòÓÒÎªÕý
- * @param left_y  ×óÒ¡¸Ëy,0ÎªÔ­µã,ÏòÉÏÎªÕý
- * @param right_x  ÓÒÒ¡¸Ëx,0ÎªÔ­µã,ÏòÓÒÎªÕý
- * @param right_y  ÓÒÒ¡¸Ëy,0ÎªÔ­µã,ÏòÉÏÎªÕý
- * @param buttons  °´Å¥,´ÎÐò:76543210
+ * @param left_x  å·¦æ‘‡æ†x,0ä¸ºåŽŸç‚¹,å‘å³ä¸ºæ­£
+ * @param left_y  å·¦æ‘‡æ†y,0ä¸ºåŽŸç‚¹,å‘ä¸Šä¸ºæ­£
+ * @param right_x  å³æ‘‡æ†x,0ä¸ºåŽŸç‚¹,å‘å³ä¸ºæ­£
+ * @param right_y  å³æ‘‡æ†y,0ä¸ºåŽŸç‚¹,å‘ä¸Šä¸ºæ­£
+ * @param buttons  æŒ‰é’®,æ¬¡åº:76543210
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_controller_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -93,11 +93,11 @@ static inline uint16_t mavlink_msg_controller_pack(uint8_t system_id, uint8_t co
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param left_x  ×óÒ¡¸Ëx,0ÎªÔ­µã,ÏòÓÒÎªÕý
- * @param left_y  ×óÒ¡¸Ëy,0ÎªÔ­µã,ÏòÉÏÎªÕý
- * @param right_x  ÓÒÒ¡¸Ëx,0ÎªÔ­µã,ÏòÓÒÎªÕý
- * @param right_y  ÓÒÒ¡¸Ëy,0ÎªÔ­µã,ÏòÉÏÎªÕý
- * @param buttons  °´Å¥,´ÎÐò:76543210
+ * @param left_x  å·¦æ‘‡æ†x,0ä¸ºåŽŸç‚¹,å‘å³ä¸ºæ­£
+ * @param left_y  å·¦æ‘‡æ†y,0ä¸ºåŽŸç‚¹,å‘ä¸Šä¸ºæ­£
+ * @param right_x  å³æ‘‡æ†x,0ä¸ºåŽŸç‚¹,å‘å³ä¸ºæ­£
+ * @param right_y  å³æ‘‡æ†y,0ä¸ºåŽŸç‚¹,å‘ä¸Šä¸ºæ­£
+ * @param buttons  æŒ‰é’®,æ¬¡åº:76543210
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_controller_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -159,11 +159,11 @@ static inline uint16_t mavlink_msg_controller_encode_chan(uint8_t system_id, uin
  * @brief Send a controller message
  * @param chan MAVLink channel to send the message
  *
- * @param left_x  ×óÒ¡¸Ëx,0ÎªÔ­µã,ÏòÓÒÎªÕý
- * @param left_y  ×óÒ¡¸Ëy,0ÎªÔ­µã,ÏòÉÏÎªÕý
- * @param right_x  ÓÒÒ¡¸Ëx,0ÎªÔ­µã,ÏòÓÒÎªÕý
- * @param right_y  ÓÒÒ¡¸Ëy,0ÎªÔ­µã,ÏòÉÏÎªÕý
- * @param buttons  °´Å¥,´ÎÐò:76543210
+ * @param left_x  å·¦æ‘‡æ†x,0ä¸ºåŽŸç‚¹,å‘å³ä¸ºæ­£
+ * @param left_y  å·¦æ‘‡æ†y,0ä¸ºåŽŸç‚¹,å‘ä¸Šä¸ºæ­£
+ * @param right_x  å³æ‘‡æ†x,0ä¸ºåŽŸç‚¹,å‘å³ä¸ºæ­£
+ * @param right_y  å³æ‘‡æ†y,0ä¸ºåŽŸç‚¹,å‘ä¸Šä¸ºæ­£
+ * @param buttons  æŒ‰é’®,æ¬¡åº:76543210
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -244,7 +244,7 @@ static inline void mavlink_msg_controller_send_buf(mavlink_message_t *msgbuf, ma
 /**
  * @brief Get field left_x from controller message
  *
- * @return  ×óÒ¡¸Ëx,0ÎªÔ­µã,ÏòÓÒÎªÕý
+ * @return  å·¦æ‘‡æ†x,0ä¸ºåŽŸç‚¹,å‘å³ä¸ºæ­£
  */
 static inline int16_t mavlink_msg_controller_get_left_x(const mavlink_message_t* msg)
 {
@@ -254,7 +254,7 @@ static inline int16_t mavlink_msg_controller_get_left_x(const mavlink_message_t*
 /**
  * @brief Get field left_y from controller message
  *
- * @return  ×óÒ¡¸Ëy,0ÎªÔ­µã,ÏòÉÏÎªÕý
+ * @return  å·¦æ‘‡æ†y,0ä¸ºåŽŸç‚¹,å‘ä¸Šä¸ºæ­£
  */
 static inline int16_t mavlink_msg_controller_get_left_y(const mavlink_message_t* msg)
 {
@@ -264,7 +264,7 @@ static inline int16_t mavlink_msg_controller_get_left_y(const mavlink_message_t*
 /**
  * @brief Get field right_x from controller message
  *
- * @return  ÓÒÒ¡¸Ëx,0ÎªÔ­µã,ÏòÓÒÎªÕý
+ * @return  å³æ‘‡æ†x,0ä¸ºåŽŸç‚¹,å‘å³ä¸ºæ­£
  */
 static inline int16_t mavlink_msg_controller_get_right_x(const mavlink_message_t* msg)
 {
@@ -274,7 +274,7 @@ static inline int16_t mavlink_msg_controller_get_right_x(const mavlink_message_t
 /**
  * @brief Get field right_y from controller message
  *
- * @return  ÓÒÒ¡¸Ëy,0ÎªÔ­µã,ÏòÉÏÎªÕý
+ * @return  å³æ‘‡æ†y,0ä¸ºåŽŸç‚¹,å‘ä¸Šä¸ºæ­£
  */
 static inline int16_t mavlink_msg_controller_get_right_y(const mavlink_message_t* msg)
 {
@@ -284,7 +284,7 @@ static inline int16_t mavlink_msg_controller_get_right_y(const mavlink_message_t
 /**
  * @brief Get field buttons from controller message
  *
- * @return  °´Å¥,´ÎÐò:76543210
+ * @return  æŒ‰é’®,æ¬¡åº:76543210
  */
 static inline uint8_t mavlink_msg_controller_get_buttons(const mavlink_message_t* msg)
 {

@@ -4,7 +4,7 @@
  * @LastEditTime: 2023-04-02 23:54:26
  * @LastEditors: szf
  * @Description: 
- * @FilePath: \ER-Upper-Stucture\UserCode\user_src\usercallback.c
+ * @FilePath: \ER-Upper-Stucture\UserCode\user_src\user_callback.c
  * @WeChat:szf13373959031
  */
 /**
@@ -15,10 +15,9 @@
  * @return {void}
  */
 
-#include "usermain.h"
-#include "usercallback.h"
+#include "user_main.h"
+#include "user_callback.h"
 #include "wtr_uart.h"
-#include "uart_device.h"
 #include "wtr_mavlink.h"
 
 int counter          = 0;
@@ -41,10 +40,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
 }
 
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-	UD_TxCpltCallback(huart);
-}
 
 /**
  * @brief 接收到完整消息且校验通过后会调用这个函数。在这个函数里调用解码函数就可以向结构体写入收到的数据

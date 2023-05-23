@@ -9,57 +9,47 @@
  */
 
 #include "servo.h"
+#include "state_manage.h"
+#include "wtr_vesc.h"
+
+SERVO_REF_FIRE temp_fire_ref;
 
 void ServoTask(void const *argument)
 {
     uint32_t PreviousWakeTime = osKernelSysTick();
     for (;;) {
-        if (Pickup_state == Finished) {
-            speedServo((Raw_Data.wheel-1024)*5, &hDJI[4]);
-            positionServo(180, &hDJI[5]);
-            positionServo(0, &hDJI[6]);
-        }
-        else if (Pickup_state == Ongoing) // 开始取环
-        {
-            switch (Pickup_mode) {
-                case Motionless:    //初始取环三个机构
-                    positionServo(0, &hDJI[4]);     //伸缩杆机构
-                    positionServo(0, &hDJI[5]);     //经常崩坏齿轮的讨厌电机
-                    positionServo(0, &hDJI[6]);     //爪子
-                    break;
-                case Overturn:      //翻转到爪子朝下
-                    positionServo(0, &hDJI[4]);
-                    positionServo(OverturnAngle - 100, &hDJI[5]);
-                    positionServo(0, &hDJI[6]);
-                    break;
-                case Extend:
-                    //positionServo(ExtendAngle + 200, &hDJI[4]);
-                    speedServo((Raw_Data.wheel-1024)*5, &hDJI[4]);
-                    positionServo(OverturnAngle, &hDJI[5]);
-                    positionServo(0, &hDJI[6]);
-                    break;
-                case Claw_extend:
-                    positionServo(ExtendAngle, &hDJI[4]);
-                    positionServo(OverturnAngle, &hDJI[5]);
-                    positionServo(ClawAngle - 10, &hDJI[6]);
-                    break;
-                case Retract:
-                    positionServo(0, &hDJI[4]);
-                    positionServo(OverturnAngle, &hDJI[5]);
-                    positionServo(ClawAngle, &hDJI[6]);
-                    break;
-                case Overturn_back:
-                    positionServo(2000, &hDJI[4]);
-                    positionServo(180+50, &hDJI[5]);
-                    positionServo(ClawAngle, &hDJI[6]);
-                    break;
-                case Claw_retract:
-                    positionServo(2000, &hDJI[4]);
-                    positionServo(180, &hDJI[5]);
-                    positionServo(0+3, &hDJI[6]);
-                    break;
-            }
-        }
+         
+        // 推环、递环、Pitch、Yaw轴电机的伺服
+        xSemaphoreTake(Fire_ref.xMutex_servo_fire, (TickType_t)10);
+        // 射环两个电机伺服拷贝
+        temp_fire_ref = ReadServoRefFire(&Fire_ref);
+        positionServo(Fire_ref.position_servo_ref_push,&hDJI[Motor_Push_id]);
+        positionServo(Fire_ref.position_servo_ref_pass,&hDJI[Motor_pass_id]);
+        positionServo(Fire_ref.position_servo_ref_pitch,&hDJI[Motor_Pitch_id]);
+        positionServo(Fire_ref.position_servo_ref_yaw,&hDJI[Motor_Yaw_id]);
+        xSemaphoreGive(Fire_ref.xMutex_servo_fire);
+
+        VESC_CAN_SET_ERPM(&hvesc[0],temp_fire_ref.speed_servo_ref_left);
+        VESC_CAN_SET_ERPM(&hvesc[1],temp_fire_ref.speed_servo_ref_right);
+
+        // 取环三个电机的伺服
+        xSemaphoreTake(Pickup_ref.xMutex_servo_pickup, (TickType_t)10);
+        positionServo(Pickup_ref.position_servo_ref_claw,&hDJI[Motor_Claw_id]);
+        positionServo(Pickup_ref.position_servo_ref_extend,&hDJI[Motor_Extend_id]);
+        positionServo(Pickup_ref.position_servo_ref_overturn,&hDJI[Motor_Overturn_id]);
+        xSemaphoreGive(Pickup_ref.xMutex_servo_pickup);
+
+        CanTransmit_DJI_1234(&hcan1,
+                             hDJI[0].speedPID.output,
+                             hDJI[1].speedPID.output,
+                             hDJI[2].speedPID.output,
+                             hDJI[3].speedPID.output);
+
+        CanTransmit_DJI_5678(&hcan1,
+                             hDJI[4].speedPID.output,
+                             hDJI[5].speedPID.output,
+                             hDJI[6].speedPID.output,
+                             hDJI[7].speedPID.output);
         osDelayUntil(&PreviousWakeTime, 5);
     }
 }
