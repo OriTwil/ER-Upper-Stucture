@@ -19,15 +19,15 @@ void ServoTask(void const *argument)
     uint32_t PreviousWakeTime = osKernelSysTick();
     for (;;) {
          
-        // 推环、递环、Pitch、Yaw轴电机的伺服
         xSemaphoreTake(Fire_ref.xMutex_servo_fire, (TickType_t)10);
+        // 推环、递环、Pitch、Yaw轴电机的伺服
         // 射环两个电机伺服拷贝
         temp_fire_ref = ReadServoRefFire(&Fire_ref);
-        positionServo(Fire_ref.position_servo_ref_push,&hDJI[Motor_Push_id]);
-        positionServo(Fire_ref.position_servo_ref_pass,&hDJI[Motor_pass_id]);
-        positionServo(Fire_ref.position_servo_ref_pitch,&hDJI[Motor_Pitch_id]);
-        positionServo(Fire_ref.position_servo_ref_yaw,&hDJI[Motor_Yaw_id]);
         xSemaphoreGive(Fire_ref.xMutex_servo_fire);
+        positionServo(temp_fire_ref.position_servo_ref_push,&hDJI[Motor_Push_id]);
+        positionServo(temp_fire_ref.position_servo_ref_pass,&hDJI[Motor_pass_id]);
+        positionServo(temp_fire_ref.position_servo_ref_pitch,&hDJI[Motor_Pitch_id]);
+        positionServo(temp_fire_ref.position_servo_ref_yaw,&hDJI[Motor_Yaw_id]);
 
         VESC_CAN_SET_ERPM(&hvesc[0],temp_fire_ref.speed_servo_ref_left);
         VESC_CAN_SET_ERPM(&hvesc[1],temp_fire_ref.speed_servo_ref_right);
@@ -54,7 +54,7 @@ void ServoTask(void const *argument)
     }
 }
 
-void ServoTaskStart(mavlink_controller_t *controldata)
+void ServoTaskStart()
 {
     osThreadDef(servo, ServoTask, osPriorityBelowNormal, 0, 512);
     osThreadCreate(osThread(servo), NULL);

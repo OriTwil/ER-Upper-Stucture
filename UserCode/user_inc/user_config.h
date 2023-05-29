@@ -55,9 +55,9 @@
 #define VESC_Right_id 0x02
 
 
-#define Motor_Pitch_id 0
+#define Motor_Pitch_id 2
 #define Motor_Yaw_id 1
-#define Motor_Push_id 2
+#define Motor_Push_id 0
 #define Motor_pass_id 3 
 #define Motor_Overturn_id 4
 #define Motor_Extend_id 5

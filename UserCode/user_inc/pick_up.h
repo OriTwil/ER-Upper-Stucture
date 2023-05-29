@@ -13,7 +13,7 @@
 #include <math.h>
 #include "user_config.h"
 
-void PickUpInit();
+void ServoInit();
 void PickUpTask(void const *argument);
 void PickUpTestTask(void const *argument);
 void PickUpTaskStart(mavlink_controller_t *controldata);

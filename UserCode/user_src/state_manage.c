@@ -1,5 +1,6 @@
 #include "state_manage.h"
 #include "user_config.h"
+#include "tim.h"
 
 UPPER_STATE Upper_state;
 SERVO_REF_PICKUP Pickup_ref;
@@ -14,9 +15,27 @@ VESC_t hvesc[2];
  */
 void StateManagemantTask(void const *argument)
 {
-    osDelay(20);
+    HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
+
+    __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, 2000);
+    __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, 2000);
+    vTaskDelay(2000);
+    __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, 1000);
+    __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, 1000);
+    vTaskDelay(2000);
+    __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, 1175);
+    __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, 1175);
+
+    vTaskDelay(20);
+
     for (;;) {
-        vTaskDelay(10);
+        // SetServoRefFire(10000, 10000, &Fire_ref);
+        // vTaskDelay(10);
+        vTaskDelay(3000);
+        SetServoRefPush(150, &Fire_ref);
+        vTaskDelay(5000);
+        SetServoRefPush(0, &Fire_ref);
     }
 }
 
@@ -55,7 +74,7 @@ void UpperStateInit()
     // 取环组件的伺服值
     Pickup_ref.position_servo_ref_overturn = 0;
     Pickup_ref.position_servo_ref_extend   = 0;
-    Pickup_ref.position_servo_ref_claw = 0;
+    Pickup_ref.position_servo_ref_claw     = 0;
 
     // 射环组件的伺服值
     Fire_ref.speed_servo_ref_left     = 0;

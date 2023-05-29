@@ -14,6 +14,6 @@
 #include "user_main.h"
 
 void ServoTask(void const *argument);
-void ServoTaskStart(mavlink_controller_t *controldata);
+void ServoTaskStart();
 
 #endif

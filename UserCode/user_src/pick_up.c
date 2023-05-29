@@ -10,6 +10,7 @@
 #include "pick_up.h"
 #include "wtr_uart.h"
 #include "state_manage.h"
+#include "tim.h"
 Button button = {
     .button_min_time = 500,
     .last_tick       = 0,
@@ -137,12 +138,17 @@ void DeadBand(double x, double y, double *new_x, double *new_y, double threshoul
     *new_y = y * k;
 }
 
-void PickUpInit()
+void ServoInit()
 {
     CANFilterInit(&hcan1);
+    hDJI[0].motorType = M3508;
+    hDJI[1].motorType = M3508;
+    hDJI[2].motorType = M3508;
+    hDJI[3].motorType = M3508;
     hDJI[4].motorType = M3508; // 丝杠伸缩
     hDJI[5].motorType = M3508; // 翻滚
     hDJI[6].motorType = M2006; // 爪子
 
     DJI_Init(); // 大疆电机初始化
+
 }

@@ -23,7 +23,8 @@
 #include "servo.h"
 #include "wtr_uart.h"
 #include "user_callback.h"
-
+#include "state_manage.h"
+#include "communicate.h"
 // 变量定义
 mavlink_controller_t ControllerData = {0};
 
@@ -39,12 +40,14 @@ void StartDefaultTask(void const *argument)
     wtrMavlink_BindChannel(&huart8, MAVLINK_COMM_0);// MAVLINK初始化
     CtrlDataSender_Init(&huart1, MAVLINK_COMM_1); // 遥控器初始化
     HAL_UART_Receive_DMA(&huart1, JoyStickReceiveData, 18); // DMA接收AS69
+    UpperStateInit();
+    ServoInit();
 
     //开启线程
 	// CtrlDataSender_Start(&ControllerData);// 遥控器线程
-    ServoTaskStart(&ControllerData);
-    PickUpTaskStart(&ControllerData);// 取环线程
-    // FireTaskStart(&ControllerData);// 射换线程
+    ServoTaskStart();
+    // PickUpTaskStart(&ControllerData);// 取环线程
+    StateManagemantTaskStart();
     
     for (;;) {
         osDelay(1);
