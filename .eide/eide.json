@@ -87,7 +87,10 @@
       "custom_dep": {
         "name": "default",
         "incList": [
-          ".eide/deps"
+          ".eide/deps",
+          "UserCode/App",
+          "UserCode/Lib",
+          "UserCode/Upper"
         ],
         "libList": [],
         "sourceDirList": [],

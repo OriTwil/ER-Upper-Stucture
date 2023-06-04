@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<mavlink>
+  <version>3</version>
+  <messages>
+    <message id="11" name="CHASSIS_TO_UPPER">
+        <description>from chassis mcu</description>
+        <field type="float" name="pos_x">x 坐标</field>
+        <field type="float" name="pos_y">y 位置</field>
+        <field type="float" name="zangle"> 航向角</field>
+        <field type="float" name="xangle"> 横滚角</field>
+        <field type="float" name="yangle"> 俯仰角</field>
+        <field type="float" name="w_z">航向角速度</field>
+        <field type="int32_t" name="point">目标点</field>
+    </message>
+    <message id="209" name="JOYSTICK_AIR">
+        <description> Components on remote controller</description>
+        <field type="uint32_t" name="buttons"> Buttons </field>
+        <field type="int16_t[2]" name="knobs"> [0]: left knob. [1]: right knob </field>
+        <field type="float[2]" name="joystickL"> [0]: x pos [1]: y pos </field>
+        <field type="float[2]" name="joystickR"> [0]: x pos [1]: y pos </field>
+        <field type="uint8_t" name="switchs"> bit0: left sw. bit1: right sw </field>
+    </message>
+  </messages>
+</mavlink>
