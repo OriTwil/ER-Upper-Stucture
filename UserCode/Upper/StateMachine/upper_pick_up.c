@@ -35,31 +35,31 @@ void PickUpTask(void const *argument)
                         break;
                     case Extend:
                         SetServoRefPickup(OverturnAngle_Initial, ExtendAngle, ClawAngle_Initial, &Pickup_ref);
-                        if (hDJI[Motor_Extend_id].posPID.fdb > ExtendAngle) {
+                        if (fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle) < 2) {
                             PickupSwitchStep(Claw_extend, &Upper_state);
                         }
                         break;
                     case Claw_extend:
                         SetServoRefPickup(OverturnAngle_Initial, ExtendAngle, ClawAngle, &Pickup_ref);
-                        if (hDJI[Motor_Claw_id].posPID.fdb > ClawAngle) {
+                        if (fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle) < 2) {
                             PickupSwitchStep(Retract, &Upper_state);
                         }
                         break;
                     case Retract:
                         SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_10, ClawAngle, &Pickup_ref);
-                        if (hDJI[Motor_Extend_id].posPID.fdb < ExtendAngle_10) {
+                        if (fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_10) < 2) {
                             PickupSwitchStep(Overturn_back, &Upper_state);
                         }
                         break;
                     case Overturn_back:
                         SetServoRefOverturnTrajectory(OverturnAngle, &Pickup_ref);
-                        if (hDJI[Motor_Overturn_id].posPID.fdb > OverturnAngle_Initial) {
+                        if (fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle_Initial) < 2) {
                             PickupSwitchStep(Claw_retract, &Upper_state);
                         }
                         break;
                     case Claw_retract:
                         SetServoRefPickup(OverturnAngle, ExtendAngle_10, ClawAngle_Initial, &Pickup_ref);
-                        if (hDJI[Motor_Claw_id].posPID.fdb > ClawAngle_Initial) {
+                        if (fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 2) {
                             PickupSwitchStep(Overturn, &Upper_state);
                         }
                         break;
