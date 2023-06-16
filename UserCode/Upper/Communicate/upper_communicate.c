@@ -35,5 +35,6 @@ void CommunicateStart()
 void CommunicateInit()
 {
     wtrMavlink_BindChannel(&huart_mavlnik, MAVLINK_COMM_0);        // MAVLINK初始化
+    wtrMavlink_StartReceiveIT(MAVLINK_COMM_0);
     HAL_UART_Receive_DMA(&huart_as69, JoyStickReceiveData, 18); // DMA接收AS69
 }
