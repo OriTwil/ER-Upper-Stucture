@@ -41,7 +41,7 @@ void StartDefaultTask(void const *argument)
 
     // 开启线程
     CommunicateStart();
-    // ServoTaskStart();
+    ServoTaskStart();
     PickUpTaskStart();
     StateManagemantTaskStart();
 

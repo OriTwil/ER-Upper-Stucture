@@ -88,8 +88,8 @@ void UpperStateInit()
     Fire_ref.xMutex_servo_fire     = xSemaphoreCreateMutex();
 
     // 上层机构整体状态
-    Upper_state.Pickup_state = Pickup;
-    Upper_state.Pickup_step  = Extend;
+    Upper_state.Pickup_state = Ready;
+    Upper_state.Pickup_step  = Overturn;
     Upper_state.Pickup_ring  = First_Ring;
     Upper_state.Fire_number  = First_Target;
 
