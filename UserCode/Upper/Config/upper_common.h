@@ -18,10 +18,13 @@ typedef enum {
 typedef enum {
     Ready,
     Pickup,
-    Fire
+    Fire_StepOne,
+    Fire_StepTwo,
+    Fire_Ready
 } PICKUP_STATE;
 
 typedef enum {
+    Zero_Ring  = 0,
     First_Ring = 1,
     Second_Ring,
     Third_Ring,
@@ -35,6 +38,7 @@ typedef enum {
 } PICKUP_RING;
 
 typedef enum {
+    Zero_Target  = 0,
     First_Target = 1,
     Second_Target,
     Third_Target,
@@ -68,8 +72,8 @@ typedef __IO struct
     float speed_servo_ref_right;
     int pwm_ccr_left;
     int pwm_ccr_right;
-    float position_servo_ref_push;
-    float position_servo_ref_pass;
+    float position_servo_ref_push; // 拉环发射
+    float position_servo_ref_pass; // 打环递环
     float position_servo_ref_pitch;
     float position_servo_ref_yaw;
     SemaphoreHandle_t xMutex_servo_fire;

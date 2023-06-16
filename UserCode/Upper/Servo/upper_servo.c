@@ -18,22 +18,22 @@ void ServoTask(void const *argument)
 {
     uint32_t PreviousWakeTime = osKernelSysTick();
     for (;;) {
-         
+
         xSemaphoreTake(Fire_ref.xMutex_servo_fire, (TickType_t)10);
         // 推环、递环、Pitch、Yaw轴电机的伺服
         // 射环两个电机伺服拷贝
         temp_fire_ref = ReadServoRefFire(&Fire_ref);
         xSemaphoreGive(Fire_ref.xMutex_servo_fire);
-        positionServo(temp_fire_ref.position_servo_ref_push,&hDJI[Motor_Push_id]);
-        positionServo(temp_fire_ref.position_servo_ref_pass,&hDJI[Motor_pass_id]);
-        positionServo(temp_fire_ref.position_servo_ref_pitch,&hDJI[Motor_Pitch_id]);
-        positionServo(temp_fire_ref.position_servo_ref_yaw,&hDJI[Motor_Yaw_id]);
+        positionServo(temp_fire_ref.position_servo_ref_push, &hDJI[Motor_Push_id]);
+        positionServo(temp_fire_ref.position_servo_ref_pass, &hDJI[Motor_pass_id]);
+        positionServo(temp_fire_ref.position_servo_ref_pitch, &hDJI[Motor_Pitch_id]);
+        positionServo(temp_fire_ref.position_servo_ref_yaw, &hDJI[Motor_Yaw_id]);
 
         // 取环三个电机的伺服
         xSemaphoreTake(Pickup_ref.xMutex_servo_pickup, (TickType_t)10);
-        positionServo(Pickup_ref.position_servo_ref_claw,&hDJI[Motor_Claw_id]);
-        positionServo(Pickup_ref.position_servo_ref_extend,&hDJI[Motor_Extend_id]);
-        positionServo(Pickup_ref.position_servo_ref_overturn,&hDJI[Motor_Overturn_id]);
+        positionServo(Pickup_ref.position_servo_ref_claw, &hDJI[Motor_Claw_id]);
+        positionServo(Pickup_ref.position_servo_ref_extend, &hDJI[Motor_Extend_id]);
+        positionServo(Pickup_ref.position_servo_ref_overturn, &hDJI[Motor_Overturn_id]);
         xSemaphoreGive(Pickup_ref.xMutex_servo_pickup);
 
         CanTransmit_DJI_1234(&hcan1,
@@ -47,7 +47,7 @@ void ServoTask(void const *argument)
                              hDJI[5].speedPID.output,
                              hDJI[6].speedPID.output,
                              hDJI[7].speedPID.output);
-        osDelayUntil(&PreviousWakeTime, 5);
+        vTaskDelayUntil(&PreviousWakeTime, 5);
     }
 }
 
@@ -60,13 +60,13 @@ void ServoTaskStart()
 void ServoInit()
 {
     CANFilterInit(&hcan1);
-    hDJI[0].motorType = M3508;
-    hDJI[1].motorType = M3508;
-    hDJI[2].motorType = M3508;
-    hDJI[3].motorType = M3508;
-    hDJI[4].motorType = M3508; // 丝杠伸缩
-    hDJI[5].motorType = M3508; // 翻滚
-    hDJI[6].motorType = M2006; // 爪子
+    hDJI[Motor_Yaw_id].motorType      = M3508; // 偏航
+    hDJI[Motor_Pitch_id].motorType    = M3508; // 俯仰
+    hDJI[Motor_Push_id].motorType     = M3508; // 拉环发射
+    hDJI[Motor_Extend_id].motorType   = M3508; // 丝杠伸缩
+    hDJI[Motor_Overturn_id].motorType = M3508; // 翻滚
+    hDJI[Motor_Claw_id].motorType     = M2006; // 爪子
+    hDJI[Motor_pass_id].motorType     = M3508; // 递环
 
     DJI_Init(); // 大疆电机初始化
 }

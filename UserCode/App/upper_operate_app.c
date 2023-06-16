@@ -29,28 +29,28 @@ void StateManagemantTask(void const *argument)
     // vTaskDelay(2000);
     // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1175);
     // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1175);
-
     vTaskDelay(20);
-
     for (;;) {
-        vPortEnterCritical();
-        Remote_t Raw_Data_temp = Raw_Data;
-        vPortExitCritical();
+        Joystick_Control();
+        vTaskDelay(10);
+        // vPortEnterCritical();
+        // Remote_t Raw_Data_temp = Raw_Data;
+        // vPortExitCritical();
 
-        if (Raw_Data_temp.left == 1) {
-            SetServoRefFireTrajectory(0, Fire_Yaw_Initial, &Fire_ref);
-        } else if (Raw_Data_temp.left == 3) {
-            SetServoRefFireTrajectory(0, Fire_Yaw_Middle, &Fire_ref);
-            SetServoRefPush(Fire_Push_Initial, &Fire_ref);
-        } else if (Raw_Data_temp.left == 2) {
-            SetServoRefFireTrajectory(0, Fire_Yaw_Middle, &Fire_ref);
-            SetServoRefPush(Fire_Push, &Fire_ref);
-        }
+        // if (Raw_Data_temp.left == 1) {
+        //     SetServoRefFireTrajectory(0, Fire_Yaw_Initial, &Fire_ref);
+        // } else if (Raw_Data_temp.left == 3) {
+        //     SetServoRefFireTrajectory(0, Fire_Yaw_Middle, &Fire_ref);
+        //     SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+        // } else if (Raw_Data_temp.left == 2) {
+        //     SetServoRefFireTrajectory(0, Fire_Yaw_Middle, &Fire_ref);
+        //     SetServoRefPush(Fire_Push, &Fire_ref);
+        // }
 
-        if (Raw_Data_temp.right == 1) {
-            PickupSwitchState(Pickup, &Upper_state);
-            PickupSwitchStep(Extend, &Upper_state);
-        }
+        // if (Raw_Data_temp.right == 1) {
+        //     PickupSwitchState(Pickup, &Upper_state);
+        //     PickupSwitchStep(Extend, &Upper_state);
+        // }
 
         // if (Raw_Data_temp.right == 1) {
         //     SetServoRefPush(Fire_Push_Initial,&Fire_ref);
@@ -88,7 +88,7 @@ void UpperStateInit()
     Fire_ref.xMutex_servo_fire     = xSemaphoreCreateMutex();
 
     // 上层机构整体状态
-    Upper_state.Pickup_state = Ready;
+    Upper_state.Pickup_state = Pickup;
     Upper_state.Pickup_step  = Extend;
     Upper_state.Pickup_ring  = First_Ring;
     Upper_state.Fire_number  = First_Target;
@@ -173,6 +173,13 @@ void SetServoRefPickup(float target_overturn, float target_extend, float target_
     current_pickup_ref->position_servo_ref_extend   = target_extend;
     current_pickup_ref->position_servo_ref_overturn = target_overturn;
     xSemaphoreGive(current_pickup_ref->xMutex_servo_pickup);
+}
+
+void SetServoRefPass(float Ref_Pass, SERVO_REF_FIRE *current_fire_ref)
+{
+    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+    current_fire_ref->position_servo_ref_pass = Ref_Pass;
+    xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
 }
 
 void SetFirePwmCcr(int pwm_ccr_left, int pwm_ccr_right, SERVO_REF_FIRE *current_fire_ref)
@@ -329,20 +336,37 @@ void SetServoRefOverturnTrajectory(float ref_overturn, SERVO_REF_PICKUP *current
 
 void Joystick_Control()
 {
+    // if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossUp)) {
+    //     PickupSwitchState(Pickup, &Upper_state);
+    // }
+    // // Yaw转向
+    // if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossDown)) {
+    //     SetServoRefFireTrajectory(0, Get_Yaw_Middle, &Fire_ref);
+    // }
+    // if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossDown)) {
+    //     SetServoRefFireTrajectory(0, Yaw_Initial, &Fire_ref);
+    // }
+    // // Push
+    // if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossUp)) {
+    //     SetServoRefPush(Fire_Push, &Fire_ref);
+    //     vTaskDelay(3000);
+    //     SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+    // }
     if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossUp)) {
         PickupSwitchState(Pickup, &Upper_state);
     }
-    // Yaw转向
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossDown)) {
-        SetServoRefFireTrajectory(0, Fire_Yaw_Middle, &Fire_ref);
-    }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossDown)) {
-        SetServoRefFireTrajectory(0, Fire_Yaw_Initial, &Fire_ref);
-    }
-    // Push
     if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossUp)) {
-        SetServoRefPush(Fire_Push, &Fire_ref);
-        vTaskDelay(3000);
-        SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+        PickupSwitchState(Fire_StepOne, &Upper_state);
+        FireSwitchNumber(First_Target, &Upper_state);
+    }
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossDown)) {
+        PickupSwitchState(Fire_StepOne, &Upper_state);
+        FireSwitchNumber(Second_Target, &Upper_state);
+    }
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossLeft)) {
+        point = 1;
+    }
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossRight)) {
+        point = 2;
     }
 }

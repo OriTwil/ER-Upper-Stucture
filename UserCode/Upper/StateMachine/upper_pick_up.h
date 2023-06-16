@@ -13,18 +13,17 @@
 #include <math.h>
 #include "user_config.h"
 
-
 void PickUpTask(void const *argument);
 void PickUpTestTask(void const *argument);
 void PickUpTaskStart();
 void DeadBand(double x, double y, double *new_x, double *new_y, double threshould);
 
-
 typedef struct
 {
     uint32_t last_tick;
     uint32_t button_min_time;
-}Button;
+} Button;
 
 extern Button button;
+extern uint32_t point;
 #endif
