@@ -19,11 +19,10 @@ void ServoTask(void const *argument)
     uint32_t PreviousWakeTime = osKernelSysTick();
     for (;;) {
 
-        xSemaphoreTake(Fire_ref.xMutex_servo_fire, (TickType_t)10);
         // 推环、递环、Pitch、Yaw轴电机的伺服
         // 射环两个电机伺服拷贝
         temp_fire_ref = ReadServoRefFire(&Fire_ref);
-        xSemaphoreGive(Fire_ref.xMutex_servo_fire);
+
         positionServo(temp_fire_ref.position_servo_ref_push, &hDJI[Motor_Push_id]);
         positionServo(temp_fire_ref.position_servo_ref_pass, &hDJI[Motor_pass_id]);
         positionServo(temp_fire_ref.position_servo_ref_pitch, &hDJI[Motor_Pitch_id]);
@@ -47,13 +46,13 @@ void ServoTask(void const *argument)
                              hDJI[5].speedPID.output,
                              hDJI[6].speedPID.output,
                              hDJI[7].speedPID.output);
-        vTaskDelayUntil(&PreviousWakeTime, 5);
+        vTaskDelayUntil(&PreviousWakeTime, 2);
     }
 }
 
 void ServoTaskStart()
 {
-    osThreadDef(servo, ServoTask, osPriorityBelowNormal, 0, 512);
+    osThreadDef(servo, ServoTask, osPriorityNormal, 0, 512);
     osThreadCreate(osThread(servo), NULL);
 }
 

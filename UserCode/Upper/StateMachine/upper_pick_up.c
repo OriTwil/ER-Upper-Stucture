@@ -34,31 +34,31 @@ void PickUpTask(void const *argument)
                 switch (Upper_state.Pickup_step) {
                     case Overturn:
                         SetServoRefPass(Pickup_Pass, &Fire_ref);
-                        if (fabs(hDJI[Motor_pass_id].posPID.fdb - Pickup_Pass) < 0.2) {
+                        if (fabs(hDJI[Motor_pass_id].posPID.fdb - Pickup_Pass) < 5) {
                             PickupSwitchStep(Extend, &Upper_state);
                         }
                         break;
                     case Extend:
                         SetServoRefPickup(OverturnAngle_Initial, ExtendAngle, ClawAngle_Initial, &Pickup_ref);
-                        if (fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle_Initial) < 0.5 &&
-                            fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle) < 0.5 &&
-                            fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 0.5) {
+                        if (fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle_Initial) < 1.0 &&
+                            fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle) < 40 &&
+                            fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 1.0) {
                             PickupSwitchStep(Claw_extend, &Upper_state);
                         }
                         break;
                     case Claw_extend:
                         SetServoRefPickup(OverturnAngle_Initial, ExtendAngle, ClawAngle, &Pickup_ref);
-                        if (fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle_Initial) < 0.5 &&
-                            fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle) < 0.5 &&
-                            fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle) < 0.5) {
+                        if (fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle_Initial) < 1.0 &&
+                            fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle) < 1.0 &&
+                            fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle) < 8.0) {
                             PickupSwitchStep(Retract, &Upper_state);
                         }
                         break;
                     case Retract:
                         SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_back, ClawAngle, &Pickup_ref);
-                        if (fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle_Initial) < 0.5 &&
-                            fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_back) < 0.5 &&
-                            fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle) < 0.5) {
+                        if (fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle_Initial) < 1.0 &&
+                            fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_back) < 30.0 &&
+                            fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle) < 1.0) {
                             PickupSwitchStep(Overturn_back, &Upper_state);
                         }
                         break;
@@ -71,13 +71,14 @@ void PickUpTask(void const *argument)
                         break;
                     case Claw_retract:
                         SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
-                        if (fabs(hDJI[Motor_pass_id].posPID.fdb - Fire_Pass_Initial) > 0.2) {
+                        if (fabs(hDJI[Motor_pass_id].posPID.fdb - Fire_Pass_Initial) > 5.0) {
                             break;
                         }
                         SetServoRefPickup(OverturnAngle, ExtendAngle_back, ClawAngle_Initial, &Pickup_ref);
                         if (fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 0.5 &&
                             fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_back) < 0.5 &&
-                            fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 0.5) {
+                            fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 5.0) {
+                            PickupSwitchStep(Overturn, &Upper_state);
                             PickupSwitchState(Fire_Ready, &Upper_state);
                         }
                         break;
@@ -95,105 +96,142 @@ void PickUpTask(void const *argument)
                 switch (Upper_state.Pickup_ring) {
                     case First_Ring:
                         SetServoRefPickup(OverturnAngle, ExtendAngle_1, ClawAngle_Initial, &Pickup_ref);
-                        if (!(fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 0.5 &&
-                              fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_1) < 0.5 &&
-                              fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 0.5)) {
+                        if (!(fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 1.0 &&
+                              fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_1) < 5.0 &&
+                              fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 1.0)) {
                             break;
                         }
                         SetServoRefFireTrajectory(Get_Pitch_1, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_1, &Fire_ref);
-                        vTaskDelay(500);
+                        vTaskDelay(1000);
                         SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
                         PickupSwitchRing(Second_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
                     case Second_Ring:
                         SetServoRefPickup(OverturnAngle, ExtendAngle_2, ClawAngle_Initial, &Pickup_ref);
-                        vTaskDelay(100);
+                        if (!(fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 1.0 &&
+                              fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_2) < 5.0 &&
+                              fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 1.0)) {
+                            break;
+                        }
                         SetServoRefFireTrajectory(Get_Pitch_2, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_2, &Fire_ref);
-                        vTaskDelay(200);
+                        vTaskDelay(1000);
                         SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
                         PickupSwitchRing(Third_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
                     case Third_Ring:
                         SetServoRefPickup(OverturnAngle, ExtendAngle_3, ClawAngle_Initial, &Pickup_ref);
-                        vTaskDelay(100);
+                        if (!(fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 1.0 &&
+                              fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_3) < 5.0 &&
+                              fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 1.0)) {
+                            break;
+                        }
                         SetServoRefFireTrajectory(Get_Pitch_3, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_3, &Fire_ref);
-                        vTaskDelay(200);
+                        vTaskDelay(1000);
                         SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
                         PickupSwitchRing(Fourth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
                     case Fourth_Ring:
                         SetServoRefPickup(OverturnAngle, ExtendAngle_4, ClawAngle_Initial, &Pickup_ref);
-                        vTaskDelay(100);
+                        if (!(fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 1.0 &&
+                              fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_4) < 5.0 &&
+                              fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 1.0)) {
+                            break;
+                        }
                         SetServoRefFireTrajectory(Get_Pitch_4, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_4, &Fire_ref);
-                        vTaskDelay(200);
+                        vTaskDelay(1000);
                         SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
                         PickupSwitchRing(Fifth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
                     case Fifth_Ring:
                         SetServoRefPickup(OverturnAngle, ExtendAngle_5, ClawAngle_Initial, &Pickup_ref);
-                        vTaskDelay(100);
+                        if (!(fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 1.0 &&
+                              fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_5) < 5.0 &&
+                              fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 1.0)) {
+                            break;
+                        }
                         SetServoRefFireTrajectory(Get_Pitch_5, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_5, &Fire_ref);
-                        vTaskDelay(200);
+                        vTaskDelay(1000);
                         SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
                         PickupSwitchRing(Sixth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
                     case Sixth_Ring:
                         SetServoRefPickup(OverturnAngle, ExtendAngle_6, ClawAngle_Initial, &Pickup_ref);
-                        vTaskDelay(100);
+                        if (!(fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 1.0 &&
+                              fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_6) < 5.0 &&
+                              fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 1.0)) {
+                            break;
+                        }
                         SetServoRefFireTrajectory(Get_Pitch_6, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_6, &Fire_ref);
-                        vTaskDelay(200);
+                        vTaskDelay(1000);
                         SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
                         PickupSwitchRing(Seventh_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
                     case Seventh_Ring:
                         SetServoRefPickup(OverturnAngle, ExtendAngle_7, ClawAngle_Initial, &Pickup_ref);
-                        vTaskDelay(100);
+                        if (!(fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 1.0 &&
+                              fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_7) < 5.0 &&
+                              fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 1.0)) {
+                            break;
+                        }
                         SetServoRefFireTrajectory(Get_Pitch_7, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_7, &Fire_ref);
-                        vTaskDelay(200);
+                        vTaskDelay(1000);
                         SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
                         PickupSwitchRing(Eighth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
                     case Eighth_Ring:
                         SetServoRefPickup(OverturnAngle, ExtendAngle_8, ClawAngle_Initial, &Pickup_ref);
-                        vTaskDelay(100);
+                        if (!(fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 1.0 &&
+                              fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_8) < 5.0 &&
+                              fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 1.0)) {
+                            break;
+                        }
                         SetServoRefFireTrajectory(Get_Pitch_8, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_8, &Fire_ref);
-                        vTaskDelay(200);
+                        vTaskDelay(1000);
                         SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
                         PickupSwitchRing(Ninth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
                     case Ninth_Ring:
                         SetServoRefPickup(OverturnAngle, ExtendAngle_9, ClawAngle_Initial, &Pickup_ref);
-                        vTaskDelay(100);
+                        if (!(fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 1.0 &&
+                              fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_9) < 5.0 &&
+                              fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 1.0)) {
+                            break;
+                        }
                         SetServoRefFireTrajectory(Get_Pitch_9, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_9, &Fire_ref);
-                        vTaskDelay(200);
+                        vTaskDelay(1000);
                         SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
                         PickupSwitchRing(Tenth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
                     case Tenth_Ring:
                         SetServoRefPickup(OverturnAngle, ExtendAngle_10, ClawAngle_Initial, &Pickup_ref);
-                        vTaskDelay(100);
+                        if (!(fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 1.0 &&
+                              fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_10) < 5.0 &&
+                              fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 1.0)) {
+                            break;
+                        }
                         SetServoRefFireTrajectory(Get_Pitch_10, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_10, &Fire_ref);
-                        vTaskDelay(200);
+                        vTaskDelay(1000);
                         SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        PickupSwitchRing(First_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         is_Tenth_Ring = true;
                         break;
@@ -209,6 +247,7 @@ void PickUpTask(void const *argument)
                                 SetServoRefFireTrajectory(Fire_Pitch_1_1, Fire_Yaw_1_1, &Fire_ref);
                                 SetServoRefPush(Fire_Push, &Fire_ref);
                                 vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
                                 PickupSwitchState(Fire_Ready, &Upper_state);
                                 break;
                             case Second_Target:
@@ -219,9 +258,10 @@ void PickUpTask(void const *argument)
                         }
                         if (is_Tenth_Ring) {
                             SetServoRefFireTrajectory(Pitch_Initial, Yaw_Initial, &Fire_ref);
+                            SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
                             SetServoRefPickup(OverturnAngle, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
                             vTaskDelay(5);
-                            SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
+                            SetServoRefOverturnTrajectory(OverturnAngle_Initial, &Pickup_ref);
                             vTaskDelay(5);
                             SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Initial, ClawAngle_Initial, &Pickup_ref);
                             PickupSwitchState(Ready, &Upper_state);
@@ -277,7 +317,7 @@ void PickUpTask(void const *argument)
                         break;
                 }
         }
-        vTaskDelay(1);
+        vTaskDelay(5);
     }
 }
 

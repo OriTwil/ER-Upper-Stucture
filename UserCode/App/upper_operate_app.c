@@ -353,6 +353,7 @@ void Joystick_Control()
     //     SetServoRefPush(Fire_Push_Initial, &Fire_ref);
     // }
     if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossUp)) {
+        PickupSwitchStep(Overturn, &Upper_state);
         PickupSwitchState(Pickup, &Upper_state);
     }
     if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossUp)) {

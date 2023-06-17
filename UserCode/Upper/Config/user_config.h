@@ -91,7 +91,7 @@
 #define ExtendAngle            15100
 #define ExtendAngle_back       13400
 
-#define ExtendAngle_Transition 0
+#define ExtendAngle_Transition 8000
 
 #define ExtendAngle_10         0
 #define ExtendAngle_9          1700
