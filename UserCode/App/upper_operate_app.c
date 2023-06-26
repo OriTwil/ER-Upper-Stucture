@@ -18,21 +18,23 @@ mavlink_joystick_air_t Msg_joystick_air;
  */
 void StateManagemantTask(void const *argument)
 {
-    // HAL_TIM_PWM_Start(&htim_fire, TIM_CHANNEL_1);
-    // HAL_TIM_PWM_Start(&htim_fire, TIM_CHANNEL_2);
+    vTaskDelay(2000);
+    HAL_TIM_PWM_Start(&htim_fire, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&htim_fire, TIM_CHANNEL_2);
+    vTaskDelay(2000);
 
-    // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 2000);
-    // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 2000);
-    // vTaskDelay(2000);
-    // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
-    // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
-    // vTaskDelay(2000);
-    // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1175);
-    // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1175);
+    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 2000);
+    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 2000);
+    vTaskDelay(2000);
+    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+    vTaskDelay(2000);
+    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
     vTaskDelay(20);
     for (;;) {
         Joystick_Control();
-        vTaskDelay(10);
+        vTaskDelay(100);
         // vPortEnterCritical();
         // Remote_t Raw_Data_temp = Raw_Data;
         // vPortExitCritical();
@@ -80,7 +82,7 @@ void StateManagemantTaskStart()
  * @param (void)
  * @bug Motor好像没什么用
  */
-void UpperStateInit()
+void  UpperStateInit()
 {
     // 互斥锁
     Upper_state.xMutex_upper       = xSemaphoreCreateMutex();
@@ -91,7 +93,7 @@ void UpperStateInit()
     Upper_state.Pickup_state = Ready;
     Upper_state.Pickup_step  = Overturn;
     Upper_state.Pickup_ring  = First_Ring;
-    Upper_state.Fire_number  = First_Target;
+    Upper_state.Fire_number  = Zero_Target;
 
     // 取环组件的伺服值
     Pickup_ref.position_servo_ref_overturn = 0;
@@ -274,6 +276,41 @@ void VelocityPlanning(float initialAngle, float maxAngularVelocity, float Angula
     }
 }
 
+void SetServoRefFireAndPassTrajectory(float ref_pitch, float ref_yaw, float ref_pass, SERVO_REF_FIRE *current_fire_ref)
+{
+    float initialAnglePitch = current_fire_ref->position_servo_ref_pitch;
+    float initialAngleYaw   = current_fire_ref->position_servo_ref_yaw; // 电机初始位置
+    float initialAnglePass  = current_fire_ref->position_servo_ref_pass;
+
+    bool isArrive          = false; // 标志是否达到目标位置
+    double differencePitch = 0;
+    double differenceYaw   = 0; // 和目标之间的角度差
+    double differencePass  = 0;
+    TickType_t startTime   = xTaskGetTickCount(); // 初始时间
+
+    do {
+        TickType_t endTime     = xTaskGetTickCount();
+        TickType_t elapsedTime = endTime - startTime;
+        float timeSec          = (elapsedTime / (1000.0)); // 获取当前时间/s
+
+        xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+        // 速度规划
+        VelocityPlanning(initialAnglePitch, MaxAngularVelocity_Pitch, MotorAngularAcceleration, ref_pitch, timeSec, &(current_fire_ref->position_servo_ref_pitch));
+        VelocityPlanning(initialAngleYaw, MaxAngularVelocity_Yaw, MotorAngularAcceleration, ref_yaw, timeSec, &(current_fire_ref->position_servo_ref_yaw));
+        VelocityPlanning(initialAnglePass, MaxAngularVelocity_Pass, MotorAngularAcceleration, ref_pass, timeSec, &current_fire_ref->position_servo_ref_pass);
+        xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
+
+        // 判断是否到达目标位置
+        differencePitch = fabs(current_fire_ref->position_servo_ref_pitch - ref_pitch);
+        differenceYaw   = fabs(current_fire_ref->position_servo_ref_yaw - ref_yaw);
+        differencePass  = fabs(current_fire_ref->position_servo_ref_pass - ref_pass);
+        if (differencePitch < 0.1 && differenceYaw < 0.1 && differencePass < 0.1) {
+            isArrive = true;
+        }
+        vTaskDelay(2);
+    } while (!isArrive);
+}
+
 void SetServoRefFireTrajectory(float ref_pitch, float ref_yaw, SERVO_REF_FIRE *current_fire_ref)
 {
 
@@ -336,38 +373,70 @@ void SetServoRefOverturnTrajectory(float ref_overturn, SERVO_REF_PICKUP *current
 
 void Joystick_Control()
 {
-    // if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossUp)) {
-    //     PickupSwitchState(Pickup, &Upper_state);
-    // }
-    // // Yaw转向
-    // if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossDown)) {
-    //     SetServoRefFireTrajectory(0, Get_Yaw_Middle, &Fire_ref);
-    // }
-    // if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossDown)) {
-    //     SetServoRefFireTrajectory(0, Yaw_Initial, &Fire_ref);
-    // }
-    // // Push
-    // if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossUp)) {
-    //     SetServoRefPush(Fire_Push, &Fire_ref);
-    //     vTaskDelay(3000);
-    //     SetServoRefPush(Fire_Push_Initial, &Fire_ref);
-    // }
+    // 微调上层机构
+    // 微调pitch
+    // 微调yaw
+    // 移动至取环区
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_Btn4)) {
+        point = 0;
+        FireSwitchNumber(Zero_Target, &Upper_state);
+    }
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_Btn5)) {
+        point = 0;
+        FireSwitchNumber(Zero_Target, &Upper_state);
+    }
+    // 移动至射环点位
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossLeft)) {
+        point = 1;
+    }
     if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossUp)) {
+        point = 2;
+    }
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossMid)) {
+        point = 3;
+    }
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossRight)) {
+        point = 4;
+    }
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossDown)) {
+        point = 5;
+    }
+    // 射环
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossUp) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5)) {
+        FireSwitchNumber(First_Target, &Upper_state);
+        PickupSwitchState(Fire_StepOne, &Upper_state);
+    }
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossMid) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5)) {
+        FireSwitchNumber(Second_Target, &Upper_state);
+        PickupSwitchState(Fire_StepOne, &Upper_state);
+    }
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossRight) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5)) {
+        FireSwitchNumber(Third_Target, &Upper_state);
+        PickupSwitchState(Fire_StepOne, &Upper_state);
+    }
+    // 手动自动切换
+    // 霍尔自检
+    // 递环//可能不需要了
+    // 取环
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_Btn3)) {
+        PickupSwitchRing(First_Ring, &Upper_state);
         PickupSwitchStep(Overturn, &Upper_state);
         PickupSwitchState(Pickup, &Upper_state);
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossUp)) {
-        PickupSwitchState(Fire_StepOne, &Upper_state);
-        FireSwitchNumber(First_Target, &Upper_state);
+
+    // 出发前的测试代码
+    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossLeft)) {
+        PickupSwitchStep(Overturn, &Upper_state);
+        PickupSwitchState(Pickup, &Upper_state);
+        point = 0;
     }
     if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossDown)) {
         PickupSwitchState(Fire_StepOne, &Upper_state);
-        FireSwitchNumber(Second_Target, &Upper_state);
+        FireSwitchNumber(First_Target, &Upper_state);
+        point = 0;
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossLeft)) {
-        point = 1;
-    }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossRight)) {
-        point = 2;
-    }
+    //  if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossDown)) {
+    //      PickupSwitchState(Fire_StepOne, &Upper_state);
+    //      FireSwitchNumber(Second_Target, &Upper_state);
+    //  }
 }

@@ -63,14 +63,14 @@ void PickUpTask(void const *argument)
                         }
                         break;
                     case Overturn_back:
-                        SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        SetServoRefPass(-5, &Fire_ref);
                         vTaskDelay(100);
                         SetServoRefOverturnTrajectory(OverturnAngle, &Pickup_ref);
                         vTaskDelay(2);
                         PickupSwitchStep(Claw_retract, &Upper_state);
                         break;
                     case Claw_retract:
-                        SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        SetServoRefPass(-5, &Fire_ref);
                         if (fabs(hDJI[Motor_pass_id].posPID.fdb - Fire_Pass_Initial) > 5.0) {
                             break;
                         }
@@ -87,8 +87,10 @@ void PickUpTask(void const *argument)
                 }
                 break;
             case Fire_Ready:
+                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
                 SetServoRefPush(Fire_Push_Initial, &Fire_ref);
-                SetServoRefPass(Pickup_Pass, &Fire_ref);
+                SetServoRefPass(Fire_pass_ready, &Fire_ref);
                 SetServoRefFireTrajectory(Pitch_Fire_Ready, Yaw_Fire_Ready, &Fire_ref);
                 vTaskDelay(10);
                 break;
@@ -103,8 +105,10 @@ void PickUpTask(void const *argument)
                         }
                         SetServoRefFireTrajectory(Get_Pitch_1, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_1, &Fire_ref);
-                        vTaskDelay(1000);
-                        SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        while (hDJI[Motor_pass_id].posPID.fdb - Fire_pass_threshold <= 0) {
+                            vTaskDelay(1);
+                        }
+                        SetServoRefPass(Fire_pass_ready, &Fire_ref);
                         PickupSwitchRing(Second_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -117,8 +121,10 @@ void PickUpTask(void const *argument)
                         }
                         SetServoRefFireTrajectory(Get_Pitch_2, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_2, &Fire_ref);
-                        vTaskDelay(1000);
-                        SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        while (hDJI[Motor_pass_id].posPID.fdb - Fire_pass_threshold <= 0) {
+                            vTaskDelay(1);
+                        }
+                        SetServoRefPass(Fire_pass_ready, &Fire_ref);
                         PickupSwitchRing(Third_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -131,8 +137,10 @@ void PickUpTask(void const *argument)
                         }
                         SetServoRefFireTrajectory(Get_Pitch_3, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_3, &Fire_ref);
-                        vTaskDelay(1000);
-                        SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        while (hDJI[Motor_pass_id].posPID.fdb - Fire_pass_threshold <= 0) {
+                            vTaskDelay(1);
+                        }
+                        SetServoRefPass(Fire_pass_ready, &Fire_ref);
                         PickupSwitchRing(Fourth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -145,8 +153,10 @@ void PickUpTask(void const *argument)
                         }
                         SetServoRefFireTrajectory(Get_Pitch_4, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_4, &Fire_ref);
-                        vTaskDelay(1000);
-                        SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        while (hDJI[Motor_pass_id].posPID.fdb - Fire_pass_threshold <= 0) {
+                            vTaskDelay(1);
+                        }
+                        SetServoRefPass(Fire_pass_ready, &Fire_ref);
                         PickupSwitchRing(Fifth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -159,8 +169,10 @@ void PickUpTask(void const *argument)
                         }
                         SetServoRefFireTrajectory(Get_Pitch_5, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_5, &Fire_ref);
-                        vTaskDelay(1000);
-                        SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        while (hDJI[Motor_pass_id].posPID.fdb - Fire_pass_threshold <= 0) {
+                            vTaskDelay(1);
+                        }
+                        SetServoRefPass(Fire_pass_ready, &Fire_ref);
                         PickupSwitchRing(Sixth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -173,8 +185,10 @@ void PickUpTask(void const *argument)
                         }
                         SetServoRefFireTrajectory(Get_Pitch_6, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_6, &Fire_ref);
-                        vTaskDelay(1000);
-                        SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        while (hDJI[Motor_pass_id].posPID.fdb - Fire_pass_threshold <= 0) {
+                            vTaskDelay(1);
+                        }
+                        SetServoRefPass(Fire_pass_ready, &Fire_ref);
                         PickupSwitchRing(Seventh_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -187,8 +201,10 @@ void PickUpTask(void const *argument)
                         }
                         SetServoRefFireTrajectory(Get_Pitch_7, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_7, &Fire_ref);
-                        vTaskDelay(1000);
-                        SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        while (hDJI[Motor_pass_id].posPID.fdb - Fire_pass_threshold <= 0) {
+                            vTaskDelay(1);
+                        }
+                        SetServoRefPass(Fire_pass_ready, &Fire_ref);
                         PickupSwitchRing(Eighth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -201,8 +217,10 @@ void PickUpTask(void const *argument)
                         }
                         SetServoRefFireTrajectory(Get_Pitch_8, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_8, &Fire_ref);
-                        vTaskDelay(1000);
-                        SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        while (hDJI[Motor_pass_id].posPID.fdb - Fire_pass_threshold <= 0) {
+                            vTaskDelay(1);
+                        }
+                        SetServoRefPass(Fire_pass_ready, &Fire_ref);
                         PickupSwitchRing(Ninth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -215,8 +233,10 @@ void PickUpTask(void const *argument)
                         }
                         SetServoRefFireTrajectory(Get_Pitch_9, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_9, &Fire_ref);
-                        vTaskDelay(1000);
-                        SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        while (hDJI[Motor_pass_id].posPID.fdb - Fire_pass_threshold <= 0) {
+                            vTaskDelay(1);
+                        }
+                        SetServoRefPass(Fire_pass_ready, &Fire_ref);
                         PickupSwitchRing(Tenth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -229,8 +249,10 @@ void PickUpTask(void const *argument)
                         }
                         SetServoRefFireTrajectory(Get_Pitch_10, Yaw_Fire_Ready, &Fire_ref);
                         SetServoRefPass(Fire_Pass_10, &Fire_ref);
-                        vTaskDelay(1000);
-                        SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                        while (hDJI[Motor_pass_id].posPID.fdb - Fire_pass_threshold <= 0) {
+                            vTaskDelay(1);
+                        }
+                        SetServoRefPass(Fire_pass_ready, &Fire_ref);
                         PickupSwitchRing(First_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         is_Tenth_Ring = true;
@@ -244,81 +266,371 @@ void PickUpTask(void const *argument)
                     case 0:
                         switch (Upper_state.Fire_number) {
                             case First_Target:
-                                SetServoRefFireTrajectory(Fire_Pitch_1_1, Fire_Yaw_1_1, &Fire_ref);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(500);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                while (fabs(hDJI[Motor_Push_id].posPID.fdb - Fire_Push_Transition) >= 3.0) {
+                                    vTaskDelay(1);
+                                }
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
+                                while (fabs(hDJI[Motor_Push_id].posPID.fdb - Fire_Push_Transition) >= 3.0) {
+                                    vTaskDelay(1);
+                                }
+                                SetServoRefFireTrajectory(Fire_Pitch_1_1, Yaw_Fire_Ready, &Fire_ref);
+                                vTaskDelay(50);
                                 SetServoRefPush(Fire_Push, &Fire_ref);
-                                vTaskDelay(1000);
+                                while (fabs(hDJI[Motor_Push_id].posPID.fdb - Fire_Push_Transition) >= 1.0) {
+                                    vTaskDelay(1);
+                                }
                                 SetServoRefPush(Fire_Push_Initial, &Fire_ref);
                                 PickupSwitchState(Fire_Ready, &Upper_state);
                                 break;
-                            case Second_Target:
-                                SetServoRefFireTrajectory(Fire_Pitch_1_2, Fire_Yaw_1_2, &Fire_ref);
-                                SetServoRefPush(Fire_Push, &Fire_ref);
-                                PickupSwitchState(Fire_Ready, &Upper_state);
+                            default:
                                 break;
                         }
                         if (is_Tenth_Ring) {
+                            is_Tenth_Ring = false;
+                            __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                            __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                            SetServoRefFireTrajectory(Pitch_Back_Transition, Yaw_Fire_Ready, &Fire_ref);
                             SetServoRefFireTrajectory(Pitch_Initial, Yaw_Initial, &Fire_ref);
                             SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
                             SetServoRefPickup(OverturnAngle, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
-                            vTaskDelay(5);
+                            vTaskDelay(3000);
                             SetServoRefOverturnTrajectory(OverturnAngle_Initial, &Pickup_ref);
                             vTaskDelay(5);
                             SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Initial, ClawAngle_Initial, &Pickup_ref);
+                            PickupSwitchStep(Overturn, &Upper_state);
                             PickupSwitchState(Ready, &Upper_state);
                         }
                         break;
                     case 1:
                         switch (Upper_state.Fire_number) {
                             case First_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                while (fabs(hDJI[Motor_Push_id].posPID.fdb - Fire_Push_Transition) >= 3.0) {
+                                    vTaskDelay(1);
+                                }
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
                                 SetServoRefFireTrajectory(Fire_Pitch_1_1, Fire_Yaw_1_1, &Fire_ref);
+                                vTaskDelay(800);
                                 SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
                                 PickupSwitchState(Fire_Ready, &Upper_state);
                                 break;
                             case Second_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
                                 SetServoRefFireTrajectory(Fire_Pitch_1_2, Fire_Yaw_1_2, &Fire_ref);
+                                vTaskDelay(800);
                                 SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
                                 PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            case Third_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
+                                SetServoRefFireTrajectory(Fire_Pitch_1_3, Fire_Yaw_1_3, &Fire_ref);
+                                vTaskDelay(800);
+                                SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+                                PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            default:
                                 break;
                         }
                         if (is_Tenth_Ring) {
+                            is_Tenth_Ring = false;
                             SetServoRefFireTrajectory(Pitch_Initial, Yaw_Initial, &Fire_ref);
                             SetServoRefPickup(OverturnAngle, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
                             vTaskDelay(5);
                             SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
                             vTaskDelay(5);
                             SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Initial, ClawAngle_Initial, &Pickup_ref);
+                            PickupSwitchStep(Overturn, &Upper_state);
                             PickupSwitchState(Ready, &Upper_state);
                         }
                         break;
                     case 2:
                         switch (Upper_state.Fire_number) {
                             case First_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
                                 SetServoRefFireTrajectory(Fire_Pitch_2_1, Fire_Yaw_2_1, &Fire_ref);
+                                vTaskDelay(800);
                                 SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
                                 PickupSwitchState(Fire_Ready, &Upper_state);
                                 break;
                             case Second_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
                                 SetServoRefFireTrajectory(Fire_Pitch_2_2, Fire_Yaw_2_2, &Fire_ref);
+                                vTaskDelay(800);
                                 SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
                                 PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            case Third_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
+                                SetServoRefFireTrajectory(Fire_Pitch_2_3, Fire_Yaw_2_3, &Fire_ref);
+                                vTaskDelay(800);
+                                SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+                                PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            default:
                                 break;
                         }
                         if (is_Tenth_Ring) {
+                            is_Tenth_Ring = false;
+                            __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                            __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                            SetServoRefFireTrajectory(Pitch_Back_Transition, Yaw_Fire_Ready, &Fire_ref);
+                            SetServoRefFireTrajectory(Pitch_Initial, Yaw_Initial, &Fire_ref);
+                            SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
+                            SetServoRefPickup(OverturnAngle, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
+                            vTaskDelay(3000);
+                            SetServoRefOverturnTrajectory(OverturnAngle_Initial, &Pickup_ref);
+                            vTaskDelay(5);
+                            SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Initial, ClawAngle_Initial, &Pickup_ref);
+                            PickupSwitchStep(Overturn, &Upper_state);
+                            PickupSwitchState(Ready, &Upper_state);
+                        }
+                        break;
+                    case 3:
+                        switch (Upper_state.Fire_number) {
+                            case First_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
+                                SetServoRefFireTrajectory(Fire_Pitch_3_1, Fire_Yaw_3_1, &Fire_ref);
+                                vTaskDelay(800);
+                                SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+                                PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            case Second_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
+                                SetServoRefFireTrajectory(Fire_Pitch_3_2, Fire_Yaw_3_2, &Fire_ref);
+                                vTaskDelay(800);
+                                SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+                                PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            case Third_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
+                                SetServoRefFireTrajectory(Fire_Pitch_3_3, Fire_Yaw_3_3, &Fire_ref);
+                                vTaskDelay(800);
+                                SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+                                PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            default:
+                                break;
+                        }
+                        if (is_Tenth_Ring) {
+                            is_Tenth_Ring = false;
                             SetServoRefFireTrajectory(Pitch_Initial, Yaw_Initial, &Fire_ref);
                             SetServoRefPickup(OverturnAngle, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
                             vTaskDelay(5);
                             SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
                             vTaskDelay(5);
                             SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Initial, ClawAngle_Initial, &Pickup_ref);
+                            PickupSwitchStep(Overturn, &Upper_state);
+                            PickupSwitchState(Ready, &Upper_state);
+                        }
+                        break;
+                    case 4:
+                        switch (Upper_state.Fire_number) {
+                            case First_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
+                                SetServoRefFireTrajectory(Fire_Pitch_4_1, Fire_Yaw_4_1, &Fire_ref);
+                                vTaskDelay(800);
+                                SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+                                PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            case Second_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
+                                SetServoRefFireTrajectory(Fire_Pitch_4_2, Fire_Yaw_4_2, &Fire_ref);
+                                vTaskDelay(800);
+                                SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+                                PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            case Third_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
+                                SetServoRefFireTrajectory(Fire_Pitch_4_3, Fire_Yaw_4_3, &Fire_ref);
+                                vTaskDelay(800);
+                                SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+                                PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            default:
+                                break;
+                        }
+                        if (is_Tenth_Ring) {
+                            is_Tenth_Ring = false;
+                            SetServoRefFireTrajectory(Pitch_Initial, Yaw_Initial, &Fire_ref);
+                            SetServoRefPickup(OverturnAngle, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
+                            vTaskDelay(5);
+                            SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
+                            vTaskDelay(5);
+                            SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Initial, ClawAngle_Initial, &Pickup_ref);
+                            PickupSwitchStep(Overturn, &Upper_state);
+                            PickupSwitchState(Ready, &Upper_state);
+                        }
+                        break;
+                    case 5:
+                        switch (Upper_state.Fire_number) {
+                            case First_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
+                                SetServoRefFireTrajectory(Fire_Pitch_5_1, Fire_Yaw_5_1, &Fire_ref);
+                                vTaskDelay(800);
+                                SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+                                PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            case Second_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
+                                SetServoRefFireTrajectory(Fire_Pitch_5_2, Fire_Yaw_5_2, &Fire_ref);
+                                vTaskDelay(800);
+                                SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+                                PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            case Third_Target:
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
+                                vTaskDelay(500);
+                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
+                                SetServoRefFireTrajectory(Fire_Pitch_5_3, Fire_Yaw_5_3, &Fire_ref);
+                                vTaskDelay(800);
+                                SetServoRefPush(Fire_Push, &Fire_ref);
+                                vTaskDelay(1000);
+                                SetServoRefPush(Fire_Push_Initial, &Fire_ref);
+                                PickupSwitchState(Fire_Ready, &Upper_state);
+                                break;
+                            default:
+                                break;
+                        }
+                        if (is_Tenth_Ring) {
+                            is_Tenth_Ring = false;
+                            SetServoRefFireTrajectory(Pitch_Initial, Yaw_Initial, &Fire_ref);
+                            SetServoRefPickup(OverturnAngle, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
+                            vTaskDelay(5);
+                            SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
+                            vTaskDelay(5);
+                            SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Initial, ClawAngle_Initial, &Pickup_ref);
+                            PickupSwitchStep(Overturn, &Upper_state);
                             PickupSwitchState(Ready, &Upper_state);
                         }
                         break;
                     default:
                         break;
                 }
+                break;
+            default:
+                break;
         }
-        vTaskDelay(5);
     }
+    vTaskDelay(5);
 }
 
 void PickUpTestTask(void const *argument)
@@ -355,3 +667,15 @@ void DeadBand(double x, double y, double *new_x, double *new_y, double threshoul
     *new_x = x * k;
     *new_y = y * k;
 }
+// void SetServoRefPassTrajectory(float target_angle, float threshold_angle, SERVO_REF_FIRE *current_fire_ref)
+// {
+//     xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+//     current_fire_ref->position_servo_ref_pass = target_angle;
+//     xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
+//     while (hDJI[Motor_pass_id].posPID.fdb - threshold_angle <= 0) {
+//         vTaskDelay(1);
+//     }
+//     xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+//     current_fire_ref->position_servo_ref_pass = target_angle;
+//     xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
+// }

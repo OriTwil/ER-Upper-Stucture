@@ -34,6 +34,7 @@
  */
 void StartDefaultTask(void const *argument)
 {
+
     // 初始化
     UpperStateInit();
     ServoInit();
