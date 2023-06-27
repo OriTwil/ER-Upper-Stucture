@@ -63,21 +63,26 @@ void PickUpTask(void const *argument)
                         }
                         break;
                     case Overturn_back:
-                        SetServoRefPass(-5, &Fire_ref);
+                        SetServoRefPass(-12, &Fire_ref);
                         vTaskDelay(100);
                         SetServoRefOverturnTrajectory(OverturnAngle, &Pickup_ref);
-                        vTaskDelay(2);
+                        vTaskDelay(20);
+                        SetServoRefPass(-23, &Fire_ref);
+                        SetServoRefPickup(OverturnAngle, 12800, ClawAngle, &Pickup_ref);
+                        while (fabs(hDJI[Motor_Extend_id].posPID.fdb - 12800) > 10.0) {
+                            vTaskDelay(1);
+                        }
                         PickupSwitchStep(Claw_retract, &Upper_state);
                         break;
                     case Claw_retract:
-                        SetServoRefPass(-5, &Fire_ref);
-                        if (fabs(hDJI[Motor_pass_id].posPID.fdb - Fire_Pass_Initial) > 5.0) {
-                            break;
+                        SetServoRefPass(-23, &Fire_ref);
+                        while (fabs(hDJI[Motor_pass_id].posPID.fdb - (-23)) > 5.0) {
+                            vTaskDelay(1);
                         }
-                        SetServoRefPickup(OverturnAngle, ExtendAngle_back, ClawAngle_Initial, &Pickup_ref);
+                        SetServoRefPickup(OverturnAngle, 12800, ClawAngle_Initial, &Pickup_ref);
                         if (fabs(hDJI[Motor_Overturn_id].posPID.fdb - OverturnAngle) < 0.5 &&
-                            fabs(hDJI[Motor_Extend_id].posPID.fdb - ExtendAngle_back) < 0.5 &&
-                            fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 5.0) {
+                            fabs(hDJI[Motor_Extend_id].posPID.fdb - 12800) < 0.5 &&
+                            fabs(hDJI[Motor_Claw_id].posPID.fdb - ClawAngle_Initial) < 3.0) {
                             PickupSwitchStep(Overturn, &Upper_state);
                             PickupSwitchState(Fire_Ready, &Upper_state);
                         }
@@ -87,8 +92,7 @@ void PickUpTask(void const *argument)
                 }
                 break;
             case Fire_Ready:
-                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
-                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                SetFireRefServoXC5500(1000, &Fire_ref);
                 SetServoRefPush(Fire_Push_Initial, &Fire_ref);
                 SetServoRefPass(Fire_pass_ready, &Fire_ref);
                 SetServoRefFireTrajectory(Pitch_Fire_Ready, Yaw_Fire_Ready, &Fire_ref);
@@ -266,22 +270,17 @@ void PickUpTask(void const *argument)
                     case 0:
                         switch (Upper_state.Fire_number) {
                             case First_Target:
-                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
-                                __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
-                                vTaskDelay(500);
-                                SetServoRefPush(Fire_Push_Transition, &Fire_ref);
-                                while (fabs(hDJI[Motor_Push_id].posPID.fdb - Fire_Push_Transition) >= 3.0) {
-                                    vTaskDelay(1);
-                                }
-                                SetServoRefFireTrajectory(-650, Yaw_Fire_Ready, &Fire_ref);
+                                vTaskDelay(1000);
                                 SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
-                                while (fabs(hDJI[Motor_Push_id].posPID.fdb - Fire_Push_Transition) >= 3.0) {
+                                while (fabs(hDJI[Motor_Push_id].posPID.fdb - Fire_Push_Transition_2) >= 3.0) {
                                     vTaskDelay(1);
                                 }
+                                SetFireRefServoXC5500(1000, &Fire_ref);
+                                vTaskDelay(2000);
                                 SetServoRefFireTrajectory(Fire_Pitch_1_1, Yaw_Fire_Ready, &Fire_ref);
-                                vTaskDelay(50);
+                                vTaskDelay(20);
                                 SetServoRefPush(Fire_Push, &Fire_ref);
-                                while (fabs(hDJI[Motor_Push_id].posPID.fdb - Fire_Push_Transition) >= 1.0) {
+                                while (fabs(hDJI[Motor_Push_id].posPID.fdb - Fire_Push) >= 1.0) {
                                     vTaskDelay(1);
                                 }
                                 SetServoRefPush(Fire_Push_Initial, &Fire_ref);

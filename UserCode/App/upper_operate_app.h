@@ -18,6 +18,8 @@ void VelocityPlanning(float initialAngle, float maxAngularVelocity, float Angula
 void SetServoRefFireTrajectory(float ref_pitch, float ref_yaw, SERVO_REF_FIRE *current_fire_ref);
 void SetServoRefFireAndPassTrajectory(float ref_pitch, float ref_yaw, float ref_pass, SERVO_REF_FIRE *current_fire_ref);
 void SetServoRefOverturnTrajectory(float ref_overturn, SERVO_REF_PICKUP *current_pickup_ref);
+void SetFireServoLimitRef(float limit_control, SERVO_REF_FIRE *current_fire_ref);
+void SetFireRefServoXC5500(float speed, SERVO_REF_FIRE *current_fire_ref);
 void Joystick_Control();
 
 extern UPPER_STATE Upper_state;

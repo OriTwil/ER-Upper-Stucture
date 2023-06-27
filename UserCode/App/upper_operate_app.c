@@ -18,23 +18,11 @@ mavlink_joystick_air_t Msg_joystick_air;
  */
 void StateManagemantTask(void const *argument)
 {
-    vTaskDelay(2000);
-    HAL_TIM_PWM_Start(&htim_fire, TIM_CHANNEL_1);
-    HAL_TIM_PWM_Start(&htim_fire, TIM_CHANNEL_2);
-    vTaskDelay(2000);
 
-    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 2000);
-    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 2000);
-    vTaskDelay(2000);
-    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
-    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
-    vTaskDelay(2000);
-    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
-    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
     vTaskDelay(20);
     for (;;) {
         Joystick_Control();
-        vTaskDelay(100);
+        vTaskDelay(20);
         // vPortEnterCritical();
         // Remote_t Raw_Data_temp = Raw_Data;
         // vPortExitCritical();
@@ -82,7 +70,7 @@ void StateManagemantTaskStart()
  * @param (void)
  * @bug Motor好像没什么用
  */
-void  UpperStateInit()
+void UpperStateInit()
 {
     // 互斥锁
     Upper_state.xMutex_upper       = xSemaphoreCreateMutex();
@@ -101,14 +89,16 @@ void  UpperStateInit()
     Pickup_ref.position_servo_ref_claw     = 0;
 
     // 射环组件的伺服值
-    Fire_ref.speed_servo_ref_left     = 0;
-    Fire_ref.speed_servo_ref_right    = 0;
-    Fire_ref.pwm_ccr_left             = 0;
-    Fire_ref.pwm_ccr_right            = 0;
-    Fire_ref.position_servo_ref_push  = 0;
-    Fire_ref.position_servo_ref_pass  = 0;
-    Fire_ref.position_servo_ref_pitch = 0;
-    Fire_ref.position_servo_ref_yaw   = 0;
+    Fire_ref.speed_servo_ref_left        = 1000;
+    Fire_ref.speed_servo_ref_right       = 1000;
+    Fire_ref.speed_servo_ref_left_limit  = 0;
+    Fire_ref.speed_servo_ref_right_limit = 0;
+    Fire_ref.pwm_ccr_left                = 0;
+    Fire_ref.pwm_ccr_right               = 0;
+    Fire_ref.position_servo_ref_push     = 0;
+    Fire_ref.position_servo_ref_pass     = 0;
+    Fire_ref.position_servo_ref_pitch    = 0;
+    Fire_ref.position_servo_ref_yaw      = 0;
 
     // VESC
     hvesc[0].controller_id = VESC_Left_id;
@@ -371,11 +361,26 @@ void SetServoRefOverturnTrajectory(float ref_overturn, SERVO_REF_PICKUP *current
     } while (!isArrive);
 }
 
+void SetFireServoLimitRef(float limit_control, SERVO_REF_FIRE *current_fire_ref)
+{
+    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+    current_fire_ref->speed_servo_ref_left_limit  = limit_control / 4.0;
+    current_fire_ref->speed_servo_ref_right_limit = limit_control / 4.0;
+    xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
+}
+
+void SetFireRefServoXC5500(float speed, SERVO_REF_FIRE *current_fire_ref)
+{
+    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+    current_fire_ref->speed_servo_ref_left  = speed;
+    current_fire_ref->speed_servo_ref_right = speed;
+    xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
+}
+
 void Joystick_Control()
 {
-    // 微调上层机构
-    // 微调pitch
-    // 微调yaw
+    // 微调转速
+    SetFireServoLimitRef((float)ReadJoystickKnobsLeft_x(Msg_joystick_air), &Fire_ref);
     // 移动至取环区
     if (ReadJoystickButtons(Msg_joystick_air, Btn_Btn4)) {
         point = 0;
@@ -405,14 +410,17 @@ void Joystick_Control()
     if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossUp) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5)) {
         FireSwitchNumber(First_Target, &Upper_state);
         PickupSwitchState(Fire_StepOne, &Upper_state);
+        vTaskDelay(500);
     }
     if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossMid) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5)) {
         FireSwitchNumber(Second_Target, &Upper_state);
         PickupSwitchState(Fire_StepOne, &Upper_state);
+        vTaskDelay(500);
     }
     if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossRight) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5)) {
         FireSwitchNumber(Third_Target, &Upper_state);
         PickupSwitchState(Fire_StepOne, &Upper_state);
+        vTaskDelay(500);
     }
     // 手动自动切换
     // 霍尔自检
@@ -422,6 +430,7 @@ void Joystick_Control()
         PickupSwitchRing(First_Ring, &Upper_state);
         PickupSwitchStep(Overturn, &Upper_state);
         PickupSwitchState(Pickup, &Upper_state);
+        vTaskDelay(500);
     }
 
     // 出发前的测试代码
@@ -429,11 +438,13 @@ void Joystick_Control()
         PickupSwitchStep(Overturn, &Upper_state);
         PickupSwitchState(Pickup, &Upper_state);
         point = 0;
+        vTaskDelay(1000);
     }
     if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossDown)) {
         PickupSwitchState(Fire_StepOne, &Upper_state);
         FireSwitchNumber(First_Target, &Upper_state);
         point = 0;
+        vTaskDelay(1000);
     }
     //  if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossDown)) {
     //      PickupSwitchState(Fire_StepOne, &Upper_state);
