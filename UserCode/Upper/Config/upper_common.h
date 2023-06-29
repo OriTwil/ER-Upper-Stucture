@@ -70,6 +70,8 @@ typedef __IO struct
 {
     float speed_servo_ref_left;
     float speed_servo_ref_right;
+    float speed_servo_ref_left_limit;
+    float speed_servo_ref_right_limit;
     int pwm_ccr_left;
     int pwm_ccr_right;
     float position_servo_ref_push; // 拉环发射

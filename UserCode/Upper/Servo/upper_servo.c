@@ -22,13 +22,13 @@ void ServoTask(void const *argument)
         // 推环、递环、Pitch、Yaw轴电机的伺服
         // 射环两个电机伺服拷贝
         temp_fire_ref = ReadServoRefFire(&Fire_ref);
-
         positionServo(temp_fire_ref.position_servo_ref_push, &hDJI[Motor_Push_id]);
         positionServo(temp_fire_ref.position_servo_ref_pass, &hDJI[Motor_pass_id]);
         positionServo(temp_fire_ref.position_servo_ref_pitch, &hDJI[Motor_Pitch_id]);
         positionServo(temp_fire_ref.position_servo_ref_yaw, &hDJI[Motor_Yaw_id]);
+        // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, (int)(temp_fire_ref.speed_servo_ref_left + temp_fire_ref.speed_servo_ref_left_limit));
+        // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, (int)(temp_fire_ref.speed_servo_ref_right + temp_fire_ref.speed_servo_ref_right_limit));
 
-        // 取环三个电机的伺服
         xSemaphoreTake(Pickup_ref.xMutex_servo_pickup, (TickType_t)10);
         positionServo(Pickup_ref.position_servo_ref_claw, &hDJI[Motor_Claw_id]);
         positionServo(Pickup_ref.position_servo_ref_extend, &hDJI[Motor_Extend_id]);

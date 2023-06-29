@@ -85,13 +85,13 @@
 /************************取环——Overturn*****************************/
 
 #define OverturnAngle_Initial 0
-#define OverturnAngle         -570
+#define OverturnAngle         -590
 
 /*************************取环——Extend******************************/
 
 #define ExtendAngle_Initial    0 // todo 需要确定每次初始位置都一样
 #define ExtendAngle            15100
-#define ExtendAngle_back       12800
+#define ExtendAngle_back       11400
 
 #define ExtendAngle_Transition 10000
 
@@ -109,29 +109,29 @@
 /*************************取环——claw******************************/
 
 #define ClawAngle_Initial 0
-#define ClawAngle         -64
+#define ClawAngle         -58
 
 /*************************递环——Pass******************************/
 
 #define Fire_Pass_Initial   0
 #define Pickup_Pass         -23 // 取环的时候伸出来
 #define Fire_pass_ready     -40
-#define Fire_pass_threshold -23
-#define Fire_Pass_1         0
-#define Fire_Pass_2         0
-#define Fire_Pass_3         0
-#define Fire_Pass_4         0
-#define Fire_Pass_5         0
-#define Fire_Pass_6         0
-#define Fire_Pass_7         0
-#define Fire_Pass_8         0
-#define Fire_Pass_9         0
-#define Fire_Pass_10        0
+#define Fire_pass_threshold -28
+#define Fire_Pass_1         -2.5
+#define Fire_Pass_2         -2.5
+#define Fire_Pass_3         -2.5
+#define Fire_Pass_4         -2.5
+#define Fire_Pass_5         -2.5
+#define Fire_Pass_6         -2.5
+#define Fire_Pass_7         -2.5
+#define Fire_Pass_8         -2.5
+#define Fire_Pass_9         -2.5
+#define Fire_Pass_10        -2.5
 
 /*************************递环——Extend******************************/
 
 #define Pitch_Initial         0
-#define Pitch_Fire_Ready      -950
+#define Pitch_Fire_Ready      -700
 #define Pitch_Back_Transition -800
 
 /*************************递环——Push******************************/
@@ -143,22 +143,22 @@
 
 /*************************递环——Pitch******************************/
 
-#define Get_Pitch_1  -950
-#define Get_Pitch_2  -950
-#define Get_Pitch_3  -950
-#define Get_Pitch_4  -850
-#define Get_Pitch_5  -850
-#define Get_Pitch_6  -850
-#define Get_Pitch_7  -850
-#define Get_Pitch_8  -750
-#define Get_Pitch_9  -700
-#define Get_Pitch_10 -700
+#define Get_Pitch_1  -700
+#define Get_Pitch_2  -700
+#define Get_Pitch_3  -700
+#define Get_Pitch_4  -700
+#define Get_Pitch_5  -700
+#define Get_Pitch_6  -700
+#define Get_Pitch_7  -650
+#define Get_Pitch_8  -600
+#define Get_Pitch_9  -600
+#define Get_Pitch_10 -600
 
 /*************************射环——Yaw******************************/
 
 #define Yaw_Initial    0
-#define Yaw_Fire_Ready -360
-#define Fire_Yaw_1_1   -360
+#define Yaw_Fire_Ready -370
+#define Fire_Yaw_1_1   -370
 #define Fire_Yaw_1_2   0
 #define Fire_Yaw_1_3   0
 #define Fire_Yaw_2_1   0

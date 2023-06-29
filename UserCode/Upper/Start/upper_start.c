@@ -40,6 +40,20 @@ void StartDefaultTask(void const *argument)
     ServoInit();
     CommunicateInit();
 
+    vTaskDelay(2000);
+    HAL_TIM_PWM_Start(&htim_fire, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&htim_fire, TIM_CHANNEL_2);
+    vTaskDelay(2000);
+
+    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 2000);
+    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 2000);
+    vTaskDelay(2000);
+    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+    vTaskDelay(2000);
+    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+    __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+
     // 开启线程
     taskENTER_CRITICAL();
     CommunicateStart();
