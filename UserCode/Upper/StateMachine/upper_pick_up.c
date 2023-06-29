@@ -63,7 +63,7 @@ void PickUpTask(void const *argument)
                         }
                         break;
                     case Overturn_back:
-                        SetServoRefPass(-12, &Fire_ref);
+                        SetServoRefPass(-10, &Fire_ref);
                         vTaskDelay(100);
                         SetServoRefOverturnTrajectory(OverturnAngle, &Pickup_ref);
                         vTaskDelay(20);
@@ -270,7 +270,7 @@ void PickUpTask(void const *argument)
                     case 0:
                         switch (Upper_state.Fire_number) {
                             case First_Target:
-                                vTaskDelay(1000);
+                                vTaskDelay(2000);
                                 SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
                                 while (fabs(hDJI[Motor_Push_id].posPID.fdb - Fire_Push_Transition_2) >= 3.0) {
                                     vTaskDelay(1);
@@ -297,7 +297,7 @@ void PickUpTask(void const *argument)
                             SetServoRefFireTrajectory(Pitch_Initial, Yaw_Initial, &Fire_ref);
                             SetServoRefPass(Fire_Pass_Initial, &Fire_ref);
                             SetServoRefPickup(OverturnAngle, ExtendAngle_Transition, ClawAngle_Initial, &Pickup_ref);
-                            vTaskDelay(3000);
+                            vTaskDelay(3500);
                             SetServoRefOverturnTrajectory(OverturnAngle_Initial, &Pickup_ref);
                             vTaskDelay(5);
                             SetServoRefPickup(OverturnAngle_Initial, ExtendAngle_Initial, ClawAngle_Initial, &Pickup_ref);
@@ -629,7 +629,7 @@ void PickUpTask(void const *argument)
                 break;
         }
     }
-    vTaskDelay(5);
+    vTaskDelay(50);
 }
 
 void PickUpTestTask(void const *argument)

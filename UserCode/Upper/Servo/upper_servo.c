@@ -26,8 +26,8 @@ void ServoTask(void const *argument)
         positionServo(temp_fire_ref.position_servo_ref_pass, &hDJI[Motor_pass_id]);
         positionServo(temp_fire_ref.position_servo_ref_pitch, &hDJI[Motor_Pitch_id]);
         positionServo(temp_fire_ref.position_servo_ref_yaw, &hDJI[Motor_Yaw_id]);
-        __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, (int)(temp_fire_ref.speed_servo_ref_left + temp_fire_ref.speed_servo_ref_left_limit));
-        __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, (int)(temp_fire_ref.speed_servo_ref_right + temp_fire_ref.speed_servo_ref_right_limit));
+        // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, (int)(temp_fire_ref.speed_servo_ref_left + temp_fire_ref.speed_servo_ref_left_limit));
+        // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, (int)(temp_fire_ref.speed_servo_ref_right + temp_fire_ref.speed_servo_ref_right_limit));
 
         xSemaphoreTake(Pickup_ref.xMutex_servo_pickup, (TickType_t)10);
         positionServo(Pickup_ref.position_servo_ref_claw, &hDJI[Motor_Claw_id]);

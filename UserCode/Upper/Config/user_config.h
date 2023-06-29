@@ -85,7 +85,7 @@
 /************************取环——Overturn*****************************/
 
 #define OverturnAngle_Initial 0
-#define OverturnAngle         -585
+#define OverturnAngle         -590
 
 /*************************取环——Extend******************************/
 
@@ -117,16 +117,16 @@
 #define Pickup_Pass         -23 // 取环的时候伸出来
 #define Fire_pass_ready     -40
 #define Fire_pass_threshold -28
-#define Fire_Pass_1         0
-#define Fire_Pass_2         0
-#define Fire_Pass_3         0
-#define Fire_Pass_4         0
-#define Fire_Pass_5         0
-#define Fire_Pass_6         0
-#define Fire_Pass_7         0
-#define Fire_Pass_8         0
-#define Fire_Pass_9         0
-#define Fire_Pass_10        0
+#define Fire_Pass_1         -2.5
+#define Fire_Pass_2         -2.5
+#define Fire_Pass_3         -2.5
+#define Fire_Pass_4         -2.5
+#define Fire_Pass_5         -2.5
+#define Fire_Pass_6         -2.5
+#define Fire_Pass_7         -2.5
+#define Fire_Pass_8         -2.5
+#define Fire_Pass_9         -2.5
+#define Fire_Pass_10        -2.5
 
 /*************************递环——Extend******************************/
 
