@@ -41,10 +41,12 @@ void StartDefaultTask(void const *argument)
     CommunicateInit();
 
     // 开启线程
+    taskENTER_CRITICAL();
     CommunicateStart();
     ServoTaskStart();
     PickUpTaskStart();
     StateManagemantTaskStart();
+    taskEXIT_CRITICAL();
 
     for (;;) {
         osDelay(1);
