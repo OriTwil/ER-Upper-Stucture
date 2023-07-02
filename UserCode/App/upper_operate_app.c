@@ -60,7 +60,7 @@ void StateManagemantTask(void const *argument)
 void StateManagemantTaskStart()
 {
 
-    osThreadDef(statemanagement, StateManagemantTask, osPriorityNormal, 0, 512);
+    osThreadDef(statemanagement, StateManagemantTask, osPriorityNormal, 0, 1024);
     osThreadCreate(osThread(statemanagement), NULL);
 }
 
@@ -377,23 +377,31 @@ void SetFireRefServoXC5500(float speed, SERVO_REF_FIRE *current_fire_ref)
     xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
 }
 
+bool ReadJoystickButtons_test(mavlink_joystick_air_t msg_joystick_air_, KEYS index)
+{
+
+    mavlink_joystick_air_t msg_joystick_air_temp = msg_joystick_air_;
+
+    return ((msg_joystick_air_temp.buttons >> (index - 1)) & 1);
+}
 void Joystick_Control()
 {
     // 微调转速
     if (ReadJoystickButtons(Msg_joystick_air, Btn_JoystickL)) {
-        xSemaphoreTake(Fire_ref.xMutex_servo_fire, (TickType_t)10);
-        Fire_ref.speed_servo_ref_left_limit -= 1.0;
-        Fire_ref.speed_servo_ref_right_limit -= 1.0;
-        // Fire_ref.position_servo_ref_pitch -= 1.0;
-        xSemaphoreGive(Fire_ref.xMutex_servo_fire);
+        // xSemaphoreTake(Fire_ref.xMutex_servo_fire, (TickType_t)10);
+        // Fire_ref.speed_servo_ref_left_limit -= 1.0;
+        // Fire_ref.speed_servo_ref_right_limit -= 1.0;
+        Fire_ref.position_servo_ref_pitch -= 5.0;
+        // xSemaphoreGive(Fire_ref.xMutex_servo_fire);
     }
     if (ReadJoystickButtons(Msg_joystick_air, Btn_JoystickR)) {
-        xSemaphoreTake(Fire_ref.xMutex_servo_fire, (TickType_t)10);
-        Fire_ref.speed_servo_ref_left_limit += 1.0;
-        Fire_ref.speed_servo_ref_right_limit += 1.0;
-        // Fire_ref.position_servo_ref_pitch += 1.0;
-        xSemaphoreGive(Fire_ref.xMutex_servo_fire);
+        // xSemaphoreTake(Fire_ref.xMutex_servo_fire, (TickType_t)10);
+        // Fire_ref.speed_servo_ref_left_limit += 1.0;
+        // Fire_ref.speed_servo_ref_right_limit += 1.0;
+        Fire_ref.position_servo_ref_pitch += 5.0;
+        // xSemaphoreGive(Fire_ref.xMutex_servo_fire);
     }
+    vTaskDelay(2);
     // SetFireServoLimitRef((float)ReadJoystickKnobsLeft_x(Msg_joystick_air), &Fire_ref);
     // 移动至取环区
     if (ReadJoystickButtons(Msg_joystick_air, Btn_Btn4)) {

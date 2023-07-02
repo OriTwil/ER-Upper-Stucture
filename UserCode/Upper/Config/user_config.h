@@ -147,13 +147,13 @@
 
 /*************************递环——Pitch******************************/
 
-#define Get_Pitch_1  -700
-#define Get_Pitch_2  -700
-#define Get_Pitch_3  -700
-#define Get_Pitch_4  -700
-#define Get_Pitch_5  -700
-#define Get_Pitch_6  -700
-#define Get_Pitch_7  -700
+#define Get_Pitch_1  -980
+#define Get_Pitch_2  -940
+#define Get_Pitch_3  -900
+#define Get_Pitch_4  -860
+#define Get_Pitch_5  -820
+#define Get_Pitch_6  -780
+#define Get_Pitch_7  -740
 #define Get_Pitch_8  -700
 #define Get_Pitch_9  -700
 #define Get_Pitch_10 -700
