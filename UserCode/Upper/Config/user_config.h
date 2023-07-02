@@ -75,71 +75,75 @@
 
 /************************电机速度规划参数*****************************/
 
-#define MaxAngularVelocity_Pitch    350
-#define MaxAngularVelocity_Yaw      150
-#define MaxAngularVelocity_Pass     200
-#define MaxAngularVelocity_Overturn 200
+#define MaxAngularVelocity_Pitch          350
+#define MaxAngularVelocity_Yaw            150
+#define MaxAngularVelocity_Pass           200
+#define MaxAngularVelocity_Overturn       200
 
-#define MotorAngularAcceleration    150
+#define MotorAngularAcceleration          150
+#define MotorAngularAcceleration_Pitch    150
+#define MotorAngularAcceleration_Yaw      150
+#define MotorAngularAcceleration_Pass     150
+#define MotorAngularAcceleration_Overturn 150
 
 /************************取环——Overturn*****************************/
 
 #define OverturnAngle_Initial 0
-#define OverturnAngle         -590
+#define OverturnAngle         -580
 
 /*************************取环——Extend******************************/
 
 #define ExtendAngle_Initial    0 // todo 需要确定每次初始位置都一样
-#define ExtendAngle            15100
-#define ExtendAngle_back       11400
+#define ExtendAngle            15150
+#define ExtendAngle_back       12400 // 11400
 
-#define ExtendAngle_Transition 10000
+#define ExtendAngle_Transition 10500
 
-#define ExtendAngle_10         400
-#define ExtendAngle_9          1600
-#define ExtendAngle_8          2800
-#define ExtendAngle_7          4000
-#define ExtendAngle_6          5200
-#define ExtendAngle_5          6400
-#define ExtendAngle_4          7600
-#define ExtendAngle_3          8800
-#define ExtendAngle_2          10000
-#define ExtendAngle_1          11200
+#define ExtendAngle_10         600
+#define ExtendAngle_9          1800
+#define ExtendAngle_8          3000
+#define ExtendAngle_7          4300
+#define ExtendAngle_6          5500
+#define ExtendAngle_5          6700
+#define ExtendAngle_4          8000
+#define ExtendAngle_3          9200
+#define ExtendAngle_2          10500
+#define ExtendAngle_1          11700
 
 /*************************取环——claw******************************/
 
 #define ClawAngle_Initial 0
-#define ClawAngle         -58
+#define ClawAngle         -54
 
 /*************************递环——Pass******************************/
 
 #define Fire_Pass_Initial   0
 #define Pickup_Pass         -23 // 取环的时候伸出来
 #define Fire_pass_ready     -40
-#define Fire_pass_threshold -28
-#define Fire_Pass_1         -2.5
-#define Fire_Pass_2         -2.5
-#define Fire_Pass_3         -2.5
-#define Fire_Pass_4         -2.5
-#define Fire_Pass_5         -2.5
-#define Fire_Pass_6         -2.5
-#define Fire_Pass_7         -2.5
-#define Fire_Pass_8         -2.5
-#define Fire_Pass_9         -2.5
-#define Fire_Pass_10        -2.5
+#define Fire_pass_threshold -25
+#define Fire_Pass_1         20
+#define Fire_Pass_2         20
+#define Fire_Pass_3         20
+#define Fire_Pass_4         20
+#define Fire_Pass_5         20
+#define Fire_Pass_6         20
+#define Fire_Pass_7         20
+#define Fire_Pass_8         20
+#define Fire_Pass_9         20
+#define Fire_Pass_10        20
 
 /*************************递环——Extend******************************/
 
 #define Pitch_Initial         0
 #define Pitch_Fire_Ready      -700
-#define Pitch_Back_Transition -800
+#define Pitch_Back_Transition -750
 
 /*************************递环——Push******************************/
 
 #define Fire_Push_Initial      0
-#define Fire_Push              -565
+#define Fire_Push              -590
 #define Fire_Push_Transition   -130
-#define Fire_Push_Transition_2 -260
+#define Fire_Push_Transition_2 -270
 
 /*************************递环——Pitch******************************/
 
@@ -149,10 +153,10 @@
 #define Get_Pitch_4  -700
 #define Get_Pitch_5  -700
 #define Get_Pitch_6  -700
-#define Get_Pitch_7  -650
-#define Get_Pitch_8  -600
-#define Get_Pitch_9  -600
-#define Get_Pitch_10 -600
+#define Get_Pitch_7  -700
+#define Get_Pitch_8  -700
+#define Get_Pitch_9  -700
+#define Get_Pitch_10 -700
 
 /*************************射环——Yaw******************************/
 
