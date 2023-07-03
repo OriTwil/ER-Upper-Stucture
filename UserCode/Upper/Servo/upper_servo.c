@@ -13,6 +13,11 @@
 #include "wtr_vesc.h"
 
 SERVO_REF_FIRE temp_fire_ref;
+int start_Time_ = 0;
+int take_Time_ = 0;
+int servo_Time_ = 0;
+int total_Time_ = 0;
+int give_Time_ = 0;
 
 void ServoTask(void const *argument)
 {
@@ -28,12 +33,16 @@ void ServoTask(void const *argument)
         positionServo(temp_fire_ref.position_servo_ref_yaw, &hDJI[Motor_Yaw_id]);
         // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, (int)(temp_fire_ref.speed_servo_ref_left + temp_fire_ref.speed_servo_ref_left_limit));
         // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, (int)(temp_fire_ref.speed_servo_ref_right + temp_fire_ref.speed_servo_ref_right_limit));
-
-        xSemaphoreTake(Pickup_ref.xMutex_servo_pickup, (TickType_t)10);
+        // start_Time_ = HPT_GetUs();
+        xSemaphoreTake(Pickup_ref.xMutex_servo_pickup, portMAX_DELAY);
+        // take_Time_ = HPT_GetUs() - start_Time_;
         positionServo(Pickup_ref.position_servo_ref_claw, &hDJI[Motor_Claw_id]);
         positionServo(Pickup_ref.position_servo_ref_extend, &hDJI[Motor_Extend_id]);
         positionServo(Pickup_ref.position_servo_ref_overturn, &hDJI[Motor_Overturn_id]);
+        // servo_Time_ = HPT_GetUs() - start_Time_;
         xSemaphoreGive(Pickup_ref.xMutex_servo_pickup);
+        // give_Time_ = HPT_GetUs() - servo_Time_;
+        // total_Time_ = HPT_GetUs() - start_Time_;
 
         CanTransmit_DJI_1234(&hcan1,
                              hDJI[0].speedPID.output,
@@ -52,7 +61,7 @@ void ServoTask(void const *argument)
 
 void ServoTaskStart()
 {
-    osThreadDef(servo, ServoTask, osPriorityNormal, 0, 512);
+    osThreadDef(servo, ServoTask, osPriorityNormal, 0, 1024);
     osThreadCreate(osThread(servo), NULL);
 }
 

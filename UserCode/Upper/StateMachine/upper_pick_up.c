@@ -114,6 +114,8 @@ void PickUpTask(void const *argument)
                             vTaskDelay(1);
                         }
                         SetServoRefPass(Fire_pass_ready, &Fire_ref);
+                        vTaskDelay(1000);
+                        SetServoRefFireTrajectory(-700, Yaw_Fire_Ready, &Fire_ref);
                         PickupSwitchRing(Second_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -130,6 +132,8 @@ void PickUpTask(void const *argument)
                             vTaskDelay(1);
                         }
                         SetServoRefPass(Fire_pass_ready, &Fire_ref);
+                        vTaskDelay(1000);
+                        SetServoRefFireTrajectory(-700, Yaw_Fire_Ready, &Fire_ref);
                         PickupSwitchRing(Third_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -146,6 +150,8 @@ void PickUpTask(void const *argument)
                             vTaskDelay(1);
                         }
                         SetServoRefPass(Fire_pass_ready, &Fire_ref);
+                        vTaskDelay(1000);
+                        SetServoRefFireTrajectory(-700, Yaw_Fire_Ready, &Fire_ref);
                         PickupSwitchRing(Fourth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -162,6 +168,8 @@ void PickUpTask(void const *argument)
                             vTaskDelay(1);
                         }
                         SetServoRefPass(Fire_pass_ready, &Fire_ref);
+                        vTaskDelay(1000);
+                        SetServoRefFireTrajectory(-700, Yaw_Fire_Ready, &Fire_ref);
                         PickupSwitchRing(Fifth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -178,6 +186,8 @@ void PickUpTask(void const *argument)
                             vTaskDelay(1);
                         }
                         SetServoRefPass(Fire_pass_ready, &Fire_ref);
+                        vTaskDelay(1000);
+                        SetServoRefFireTrajectory(-700, Yaw_Fire_Ready, &Fire_ref);
                         PickupSwitchRing(Sixth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -194,6 +204,8 @@ void PickUpTask(void const *argument)
                             vTaskDelay(1);
                         }
                         SetServoRefPass(Fire_pass_ready, &Fire_ref);
+                        vTaskDelay(1000);
+                        SetServoRefFireTrajectory(-700, Yaw_Fire_Ready, &Fire_ref);
                         PickupSwitchRing(Seventh_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -210,6 +222,8 @@ void PickUpTask(void const *argument)
                             vTaskDelay(1);
                         }
                         SetServoRefPass(Fire_pass_ready, &Fire_ref);
+                        vTaskDelay(1000);
+                        SetServoRefFireTrajectory(-700, Yaw_Fire_Ready, &Fire_ref);
                         PickupSwitchRing(Eighth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -226,6 +240,8 @@ void PickUpTask(void const *argument)
                             vTaskDelay(1);
                         }
                         SetServoRefPass(Fire_pass_ready, &Fire_ref);
+                        vTaskDelay(1000);
+                        SetServoRefFireTrajectory(-700, Yaw_Fire_Ready, &Fire_ref);
                         PickupSwitchRing(Ninth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -242,6 +258,8 @@ void PickUpTask(void const *argument)
                             vTaskDelay(1);
                         }
                         SetServoRefPass(Fire_pass_ready, &Fire_ref);
+                        vTaskDelay(1000);
+                        SetServoRefFireTrajectory(-700, Yaw_Fire_Ready, &Fire_ref);
                         PickupSwitchRing(Tenth_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         break;
@@ -258,6 +276,8 @@ void PickUpTask(void const *argument)
                             vTaskDelay(1);
                         }
                         SetServoRefPass(Fire_pass_ready, &Fire_ref);
+                        vTaskDelay(1000);
+                        SetServoRefFireTrajectory(-700, Yaw_Fire_Ready, &Fire_ref);
                         PickupSwitchRing(First_Ring, &Upper_state);
                         PickupSwitchState(Fire_StepTwo, &Upper_state);
                         is_Tenth_Ring = true;
@@ -271,7 +291,7 @@ void PickUpTask(void const *argument)
                     case 0:
                         switch (Upper_state.Fire_number) {
                             case First_Target:
-                                vTaskDelay(2000);
+                                vTaskDelay(1000);
 
                                 SetServoRefPush(Fire_Push_Transition_2, &Fire_ref);
                                 while (fabs(hDJI[Motor_Push_id].posPID.fdb - Fire_Push_Transition_2) >= 3.0) {
@@ -645,7 +665,7 @@ void PickUpTestTask(void const *argument)
 
 void PickUpTaskStart()
 {
-    osThreadDef(pickup, PickUpTask, osPriorityNormal, 0, 512);
+    osThreadDef(pickup, PickUpTask, osPriorityNormal, 0, 1024);
     osThreadCreate(osThread(pickup), NULL);
 
     // osThreadDef(upper_test, PickUpTestTask, osPriorityBelowNormal, 0, 512);

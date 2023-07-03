@@ -56,7 +56,7 @@ void StartDefaultTask(void const *argument)
 
     // 开启线程
     taskENTER_CRITICAL();
-    CommunicateStart();
+    // CommunicateStart();
     ServoTaskStart();
     PickUpTaskStart();
     StateManagemantTaskStart();

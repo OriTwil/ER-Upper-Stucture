@@ -60,7 +60,7 @@ void StateManagemantTask(void const *argument)
 void StateManagemantTaskStart()
 {
 
-    osThreadDef(statemanagement, StateManagemantTask, osPriorityNormal, 0, 512);
+    osThreadDef(statemanagement, StateManagemantTask, osPriorityNormal, 0, 1024);
     osThreadCreate(osThread(statemanagement), NULL);
 }
 
@@ -116,7 +116,7 @@ void UpperStateInit()
  */
 void PickupSwitchState(PICKUP_STATE target_pick_up_state, UPPER_STATE *current_upper_state)
 {
-    xSemaphoreTake(current_upper_state->xMutex_upper, (TickType_t)10);
+    xSemaphoreTake(current_upper_state->xMutex_upper, portMAX_DELAY);
     current_upper_state->Pickup_state = target_pick_up_state;
     xSemaphoreGive(current_upper_state->xMutex_upper);
 }
@@ -127,7 +127,7 @@ void PickupSwitchState(PICKUP_STATE target_pick_up_state, UPPER_STATE *current_u
  */
 void PickupSwitchStep(PICKUP_STEP target_pick_up_step, UPPER_STATE *current_upper_state)
 {
-    xSemaphoreTake(current_upper_state->xMutex_upper, (TickType_t)10);
+    xSemaphoreTake(current_upper_state->xMutex_upper, portMAX_DELAY);
     current_upper_state->Pickup_step = target_pick_up_step;
     xSemaphoreGive(current_upper_state->xMutex_upper);
 }
@@ -138,7 +138,7 @@ void PickupSwitchStep(PICKUP_STEP target_pick_up_step, UPPER_STATE *current_uppe
  */
 void PickupSwitchRing(PICKUP_RING target_pick_up_Ring, UPPER_STATE *current_upper_state)
 {
-    xSemaphoreTake(current_upper_state->xMutex_upper, (TickType_t)10);
+    xSemaphoreTake(current_upper_state->xMutex_upper, portMAX_DELAY);
     current_upper_state->Pickup_ring = target_pick_up_Ring;
     xSemaphoreGive(current_upper_state->xMutex_upper);
 }
@@ -149,7 +149,7 @@ void PickupSwitchRing(PICKUP_RING target_pick_up_Ring, UPPER_STATE *current_uppe
  */
 void FireSwitchNumber(FIRE_NUMBER target_fire_number, UPPER_STATE *current_upper_state)
 {
-    xSemaphoreTake(current_upper_state->xMutex_upper, (TickType_t)10);
+    xSemaphoreTake(current_upper_state->xMutex_upper, portMAX_DELAY);
     current_upper_state->Fire_number = target_fire_number;
     xSemaphoreGive(current_upper_state->xMutex_upper);
 }
@@ -160,7 +160,7 @@ void FireSwitchNumber(FIRE_NUMBER target_fire_number, UPPER_STATE *current_upper
  */
 void SetServoRefPickup(float target_overturn, float target_extend, float target_claw, SERVO_REF_PICKUP *current_pickup_ref)
 {
-    xSemaphoreTake(current_pickup_ref->xMutex_servo_pickup, (TickType_t)10);
+    xSemaphoreTake(current_pickup_ref->xMutex_servo_pickup, portMAX_DELAY);
     current_pickup_ref->position_servo_ref_claw     = target_claw;
     current_pickup_ref->position_servo_ref_extend   = target_extend;
     current_pickup_ref->position_servo_ref_overturn = target_overturn;
@@ -169,14 +169,14 @@ void SetServoRefPickup(float target_overturn, float target_extend, float target_
 
 void SetServoRefPass(float Ref_Pass, SERVO_REF_FIRE *current_fire_ref)
 {
-    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, portMAX_DELAY);
     current_fire_ref->position_servo_ref_pass = Ref_Pass;
     xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
 }
 
 void SetFirePwmCcr(int pwm_ccr_left, int pwm_ccr_right, SERVO_REF_FIRE *current_fire_ref)
 {
-    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, portMAX_DELAY);
     current_fire_ref->pwm_ccr_left  = pwm_ccr_left;
     current_fire_ref->pwm_ccr_right = pwm_ccr_right;
     xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
@@ -184,7 +184,7 @@ void SetFirePwmCcr(int pwm_ccr_left, int pwm_ccr_right, SERVO_REF_FIRE *current_
 
 void SetServoRefFire(float ref_left, float ref_right, SERVO_REF_FIRE *current_fire_ref)
 {
-    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, portMAX_DELAY);
     current_fire_ref->speed_servo_ref_left  = ref_left;
     current_fire_ref->speed_servo_ref_right = ref_right;
     xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
@@ -193,7 +193,7 @@ void SetServoRefFire(float ref_left, float ref_right, SERVO_REF_FIRE *current_fi
 SERVO_REF_FIRE ReadServoRefFire(SERVO_REF_FIRE *current_fire_ref)
 {
     SERVO_REF_FIRE temp_fire_ref;
-    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, portMAX_DELAY);
     temp_fire_ref = *current_fire_ref;
     xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
     return temp_fire_ref;
@@ -204,7 +204,7 @@ SERVO_REF_FIRE ReadServoRefFire(SERVO_REF_FIRE *current_fire_ref)
  */
 void SetServoRefPush(float ref_push, SERVO_REF_FIRE *current_fire_ref)
 {
-    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, portMAX_DELAY);
     current_fire_ref->position_servo_ref_push = ref_push;
     xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
 }
@@ -283,7 +283,7 @@ void SetServoRefFireAndPassTrajectory(float ref_pitch, float ref_yaw, float ref_
         TickType_t elapsedTime = endTime - startTime;
         float timeSec          = (elapsedTime / (1000.0)); // 获取当前时间/s
 
-        xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+        xSemaphoreTake(current_fire_ref->xMutex_servo_fire, portMAX_DELAY);
         // 速度规划
         VelocityPlanning(initialAnglePitch, MaxAngularVelocity_Pitch, MotorAngularAcceleration_Pitch, ref_pitch, timeSec, &(current_fire_ref->position_servo_ref_pitch));
         VelocityPlanning(initialAngleYaw, MaxAngularVelocity_Yaw, MotorAngularAcceleration_Yaw, ref_yaw, timeSec, &(current_fire_ref->position_servo_ref_yaw));
@@ -301,6 +301,11 @@ void SetServoRefFireAndPassTrajectory(float ref_pitch, float ref_yaw, float ref_
     } while (!isArrive);
 }
 
+int start_Time = 0;
+int take_Time = 0;
+int planning_Time = 0;
+int total_Time = 0;
+
 void SetServoRefFireTrajectory(float ref_pitch, float ref_yaw, SERVO_REF_FIRE *current_fire_ref)
 {
 
@@ -316,12 +321,15 @@ void SetServoRefFireTrajectory(float ref_pitch, float ref_yaw, SERVO_REF_FIRE *c
         TickType_t endTime     = xTaskGetTickCount();
         TickType_t elapsedTime = endTime - startTime;
         float timeSec          = (elapsedTime / (1000.0)); // 获取当前时间/s
-
-        xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+        start_Time = HPT_GetUs();
+        xSemaphoreTake(current_fire_ref->xMutex_servo_fire, portMAX_DELAY);
         // 速度规划
+        take_Time = HPT_GetUs() - start_Time;
         VelocityPlanning(initialAnglePitch, MaxAngularVelocity_Pitch, MotorAngularAcceleration_Pitch, ref_pitch, timeSec, &(current_fire_ref->position_servo_ref_pitch));
         VelocityPlanning(initialAngleYaw, MaxAngularVelocity_Yaw, MotorAngularAcceleration_Yaw, ref_yaw, timeSec, &(current_fire_ref->position_servo_ref_yaw));
+        planning_Time = HPT_GetUs() - start_Time;
         xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
+        total_Time = HPT_GetUs() - start_Time;
 
         // 判断是否到达目标位置
         differencePitch = fabs(current_fire_ref->position_servo_ref_pitch - ref_pitch);
@@ -347,7 +355,7 @@ void SetServoRefOverturnTrajectory(float ref_overturn, SERVO_REF_PICKUP *current
         TickType_t elapsedTime = endTime - startTime;
         float timeSec          = (elapsedTime / (1000.0)); // 获取当前时间/s
 
-        xSemaphoreTake(current_pickup_ref->xMutex_servo_pickup, (TickType_t)10);
+        xSemaphoreTake(current_pickup_ref->xMutex_servo_pickup, portMAX_DELAY);
         // 速度规划
         VelocityPlanning(initialAngleOverturn, MaxAngularVelocity_Overturn, MotorAngularAcceleration_Overturn, ref_overturn, timeSec, &(current_pickup_ref->position_servo_ref_overturn));
         xSemaphoreGive(current_pickup_ref->xMutex_servo_pickup);
@@ -363,7 +371,7 @@ void SetServoRefOverturnTrajectory(float ref_overturn, SERVO_REF_PICKUP *current
 
 void SetFireServoLimitRef(float limit_control, SERVO_REF_FIRE *current_fire_ref)
 {
-    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, portMAX_DELAY);
     current_fire_ref->speed_servo_ref_left_limit  = limit_control / 4.0;
     current_fire_ref->speed_servo_ref_right_limit = limit_control / 4.0;
     xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
@@ -371,67 +379,81 @@ void SetFireServoLimitRef(float limit_control, SERVO_REF_FIRE *current_fire_ref)
 
 void SetFireRefServoXC5500(float speed, SERVO_REF_FIRE *current_fire_ref)
 {
-    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, (TickType_t)10);
+    xSemaphoreTake(current_fire_ref->xMutex_servo_fire, portMAX_DELAY);
     current_fire_ref->speed_servo_ref_left  = speed;
     current_fire_ref->speed_servo_ref_right = speed;
     xSemaphoreGive(current_fire_ref->xMutex_servo_fire);
 }
 
+bool ReadJoystickButtons_test(mavlink_joystick_air_t msg_joystick_air_, KEYS index)
+{
+
+    mavlink_joystick_air_t msg_joystick_air_temp = msg_joystick_air_;
+
+    return ((msg_joystick_air_temp.buttons >> (index - 1)) & 1);
+}
+
 void Joystick_Control()
 {
+
+    vPortEnterCritical();
+    mavlink_joystick_air_t msg_joystick_air_temp = Msg_joystick_air;
+    vPortExitCritical();
+
     // 微调转速
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_JoystickL)) {
-        xSemaphoreTake(Fire_ref.xMutex_servo_fire, (TickType_t)10);
-        Fire_ref.speed_servo_ref_left_limit -= 1.0;
-        Fire_ref.speed_servo_ref_right_limit -= 1.0;
-        // Fire_ref.position_servo_ref_pitch -= 1.0;
-        xSemaphoreGive(Fire_ref.xMutex_servo_fire);
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_JoystickL)) {
+        // xSemaphoreTake(Fire_ref.xMutex_servo_fire, portMAX_DELAY);
+        // Fire_ref.speed_servo_ref_left_limit -= 1.0;
+        // Fire_ref.speed_servo_ref_right_limit -= 1.0;
+        Fire_ref.position_servo_ref_pitch -= 5.0;
+        // xSemaphoreGive(Fire_ref.xMutex_servo_fire);
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_JoystickR)) {
-        xSemaphoreTake(Fire_ref.xMutex_servo_fire, (TickType_t)10);
-        Fire_ref.speed_servo_ref_left_limit += 1.0;
-        Fire_ref.speed_servo_ref_right_limit += 1.0;
-        // Fire_ref.position_servo_ref_pitch += 1.0;
-        xSemaphoreGive(Fire_ref.xMutex_servo_fire);
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_JoystickR)) {
+        // xSemaphoreTake(Fire_ref.xMutex_servo_fire, portMAX_DELAY);
+        // Fire_ref.speed_servo_ref_left_limit += 1.0;
+        // Fire_ref.speed_servo_ref_right_limit += 1.0;
+        Fire_ref.position_servo_ref_pitch += 5.0;
+        // xSemaphoreGive(Fire_ref.xMutex_servo_fire);
     }
+    // vTaskDelay(2);
     // SetFireServoLimitRef((float)ReadJoystickKnobsLeft_x(Msg_joystick_air), &Fire_ref);
     // 移动至取环区
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_Btn4)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_Btn4)) {
         point = 0;
         FireSwitchNumber(Zero_Target, &Upper_state);
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_Btn5)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_Btn5)) {
         point = 0;
         FireSwitchNumber(Zero_Target, &Upper_state);
     }
     // 移动至射环点位
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossLeft)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_RightCrossLeft)) {
         point = 1;
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossUp)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_RightCrossUp)) {
         point = 2;
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossMid)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_RightCrossMid)) {
         point = 3;
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossRight)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_RightCrossRight)) {
         point = 4;
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossDown)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_RightCrossDown)) {
         point = 5;
     }
     // 射环
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossUp) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5) && Upper_state.Pickup_state == Fire_Ready) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_LeftCrossUp) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5) && Upper_state.Pickup_state == Fire_Ready) {
         FireSwitchNumber(First_Target, &Upper_state);
         PickupSwitchState(Fire_StepOne, &Upper_state);
         // vTaskDelay(500);
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossMid) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5) && Upper_state.Pickup_state == Fire_Ready) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_LeftCrossMid) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5) && Upper_state.Pickup_state == Fire_Ready) {
         FireSwitchNumber(Second_Target, &Upper_state);
         PickupSwitchState(Fire_StepOne, &Upper_state);
         // vTaskDelay(500);
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossRight) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5) && Upper_state.Pickup_state == Fire_Ready) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_LeftCrossRight) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5) && Upper_state.Pickup_state == Fire_Ready) {
         FireSwitchNumber(Third_Target, &Upper_state);
         PickupSwitchState(Fire_StepOne, &Upper_state);
         // vTaskDelay(500);
@@ -440,7 +462,7 @@ void Joystick_Control()
     // 霍尔自检
     // 递环//可能不需要了
     // 取环
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_Btn3) && Upper_state.Pickup_state == Ready) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_Btn3) && Upper_state.Pickup_state == Ready) {
         PickupSwitchRing(First_Ring, &Upper_state);
         PickupSwitchStep(Overturn, &Upper_state);
         PickupSwitchState(Pickup, &Upper_state);
@@ -448,13 +470,13 @@ void Joystick_Control()
     }
 
     // 出发前的测试代码
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossLeft) && Upper_state.Pickup_state == Ready) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_LeftCrossLeft) && Upper_state.Pickup_state == Ready) {
         PickupSwitchStep(Overturn, &Upper_state);
         PickupSwitchState(Pickup, &Upper_state);
         point = 0;
         // vTaskDelay(1000);
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossDown) && Upper_state.Pickup_state == Fire_Ready) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_LeftCrossDown) && Upper_state.Pickup_state == Fire_Ready) {
         PickupSwitchState(Fire_StepOne, &Upper_state);
         FireSwitchNumber(First_Target, &Upper_state);
         point = 0;
