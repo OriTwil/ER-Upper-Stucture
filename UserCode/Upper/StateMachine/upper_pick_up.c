@@ -665,7 +665,7 @@ void PickUpTestTask(void const *argument)
 
 void PickUpTaskStart()
 {
-    osThreadDef(pickup, PickUpTask, osPriorityNormal, 0, 512);
+    osThreadDef(pickup, PickUpTask, osPriorityNormal, 0, 1024);
     osThreadCreate(osThread(pickup), NULL);
 
     // osThreadDef(upper_test, PickUpTestTask, osPriorityBelowNormal, 0, 512);

@@ -386,60 +386,65 @@ bool ReadJoystickButtons_test(mavlink_joystick_air_t msg_joystick_air_, KEYS ind
 }
 void Joystick_Control()
 {
+
+    vPortEnterCritical();
+    mavlink_joystick_air_t msg_joystick_air_temp = Msg_joystick_air;
+    vPortExitCritical();
+
     // 微调转速
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_JoystickL)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_JoystickL)) {
         // xSemaphoreTake(Fire_ref.xMutex_servo_fire, (TickType_t)10);
         // Fire_ref.speed_servo_ref_left_limit -= 1.0;
         // Fire_ref.speed_servo_ref_right_limit -= 1.0;
         Fire_ref.position_servo_ref_pitch -= 5.0;
         // xSemaphoreGive(Fire_ref.xMutex_servo_fire);
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_JoystickR)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_JoystickR)) {
         // xSemaphoreTake(Fire_ref.xMutex_servo_fire, (TickType_t)10);
         // Fire_ref.speed_servo_ref_left_limit += 1.0;
         // Fire_ref.speed_servo_ref_right_limit += 1.0;
         Fire_ref.position_servo_ref_pitch += 5.0;
         // xSemaphoreGive(Fire_ref.xMutex_servo_fire);
     }
-    vTaskDelay(2);
+    // vTaskDelay(2);
     // SetFireServoLimitRef((float)ReadJoystickKnobsLeft_x(Msg_joystick_air), &Fire_ref);
     // 移动至取环区
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_Btn4)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_Btn4)) {
         point = 0;
         FireSwitchNumber(Zero_Target, &Upper_state);
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_Btn5)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_Btn5)) {
         point = 0;
         FireSwitchNumber(Zero_Target, &Upper_state);
     }
     // 移动至射环点位
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossLeft)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_RightCrossLeft)) {
         point = 1;
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossUp)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_RightCrossUp)) {
         point = 2;
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossMid)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_RightCrossMid)) {
         point = 3;
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossRight)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_RightCrossRight)) {
         point = 4;
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_RightCrossDown)) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_RightCrossDown)) {
         point = 5;
     }
     // 射环
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossUp) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5) && Upper_state.Pickup_state == Fire_Ready) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_LeftCrossUp) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5) && Upper_state.Pickup_state == Fire_Ready) {
         FireSwitchNumber(First_Target, &Upper_state);
         PickupSwitchState(Fire_StepOne, &Upper_state);
         // vTaskDelay(500);
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossMid) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5) && Upper_state.Pickup_state == Fire_Ready) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_LeftCrossMid) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5) && Upper_state.Pickup_state == Fire_Ready) {
         FireSwitchNumber(Second_Target, &Upper_state);
         PickupSwitchState(Fire_StepOne, &Upper_state);
         // vTaskDelay(500);
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossRight) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5) && Upper_state.Pickup_state == Fire_Ready) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_LeftCrossRight) && (point == 1 || point == 2 || point == 3 || point == 4 || point == 5) && Upper_state.Pickup_state == Fire_Ready) {
         FireSwitchNumber(Third_Target, &Upper_state);
         PickupSwitchState(Fire_StepOne, &Upper_state);
         // vTaskDelay(500);
@@ -448,7 +453,7 @@ void Joystick_Control()
     // 霍尔自检
     // 递环//可能不需要了
     // 取环
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_Btn3) && Upper_state.Pickup_state == Ready) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_Btn3) && Upper_state.Pickup_state == Ready) {
         PickupSwitchRing(First_Ring, &Upper_state);
         PickupSwitchStep(Overturn, &Upper_state);
         PickupSwitchState(Pickup, &Upper_state);
@@ -456,13 +461,13 @@ void Joystick_Control()
     }
 
     // 出发前的测试代码
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossLeft) && Upper_state.Pickup_state == Ready) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_LeftCrossLeft) && Upper_state.Pickup_state == Ready) {
         PickupSwitchStep(Overturn, &Upper_state);
         PickupSwitchState(Pickup, &Upper_state);
         point = 0;
         // vTaskDelay(1000);
     }
-    if (ReadJoystickButtons(Msg_joystick_air, Btn_LeftCrossDown) && Upper_state.Pickup_state == Fire_Ready) {
+    if (ReadJoystickButtons(msg_joystick_air_temp, Btn_LeftCrossDown) && Upper_state.Pickup_state == Fire_Ready) {
         PickupSwitchState(Fire_StepOne, &Upper_state);
         FireSwitchNumber(First_Target, &Upper_state);
         point = 0;
