@@ -313,8 +313,8 @@ void PickUpTask(void const *argument)
                         }
                         if (is_Tenth_Ring) {
                             is_Tenth_Ring = false;
-                            __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
-                            __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
+                            // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_1, 1000);
+                            // __HAL_TIM_SetCompare(&htim_fire, TIM_CHANNEL_2, 1000);
                             SetServoRefFireTrajectory(Pitch_Back_Transition, Yaw_Fire_Ready, &Fire_ref);
                             SetServoRefFireTrajectory(Pitch_Initial, Yaw_Initial, &Fire_ref);
                             SetServoRefPass(Fire_Pass_Initial, &Fire_ref);

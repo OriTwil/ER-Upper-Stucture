@@ -9,7 +9,7 @@ void PickupSwitchStep(PICKUP_STEP target_pick_up_step, UPPER_STATE *current_uppe
 void PickupSwitchRing(PICKUP_RING target_pick_up_Ring, UPPER_STATE *current_upper_state);
 void FireSwitchNumber(FIRE_NUMBER target_fire_number, UPPER_STATE *current_upper_state);
 void SetServoRefPickup(float target_overturn, float target_extend, float target_claw, SERVO_REF_PICKUP *current_pickup_ref);
-void SetServoRefPass(float Ref_Pass, SERVO_REF_FIRE *current_pickup_ref);
+void SetServoRefPass(float Ref_Pass, SERVO_REF_FIRE *current_fire_ref);
 void SetServoRefPush(float ref_push, SERVO_REF_FIRE *current_fire_ref);
 void SetFirePwmCcr(int pwm_ccr_left, int pwm_ccr_right, SERVO_REF_FIRE *current_fire_ref);
 void SetServoRefFire(float ref_left, float ref_right, SERVO_REF_FIRE *current_fire_ref);

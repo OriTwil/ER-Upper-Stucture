@@ -297,14 +297,14 @@ void SetServoRefFireAndPassTrajectory(float ref_pitch, float ref_yaw, float ref_
         if (differencePitch < 0.1 && differenceYaw < 0.1 && differencePass < 0.1) {
             isArrive = true;
         }
-        vTaskDelay(2);
+        vTaskDelay(10);
     } while (!isArrive);
 }
 
-int start_Time = 0;
-int take_Time = 0;
+int start_Time    = 0;
+int take_Time     = 0;
 int planning_Time = 0;
-int total_Time = 0;
+int total_Time    = 0;
 
 void SetServoRefFireTrajectory(float ref_pitch, float ref_yaw, SERVO_REF_FIRE *current_fire_ref)
 {
@@ -321,7 +321,7 @@ void SetServoRefFireTrajectory(float ref_pitch, float ref_yaw, SERVO_REF_FIRE *c
         TickType_t endTime     = xTaskGetTickCount();
         TickType_t elapsedTime = endTime - startTime;
         float timeSec          = (elapsedTime / (1000.0)); // 获取当前时间/s
-        start_Time = HPT_GetUs();
+        start_Time             = HPT_GetUs();
         xSemaphoreTake(current_fire_ref->xMutex_servo_fire, portMAX_DELAY);
         // 速度规划
         take_Time = HPT_GetUs() - start_Time;
@@ -338,7 +338,7 @@ void SetServoRefFireTrajectory(float ref_pitch, float ref_yaw, SERVO_REF_FIRE *c
             isArrive = true;
         }
 
-        vTaskDelay(2);
+        vTaskDelay(10);
     } while (!isArrive);
 }
 
@@ -365,7 +365,7 @@ void SetServoRefOverturnTrajectory(float ref_overturn, SERVO_REF_PICKUP *current
         if (differenceOverturn < 0.1) {
             isArrive = true;
         }
-        vTaskDelay(2);
+        vTaskDelay(10);
     } while (!isArrive);
 }
 
