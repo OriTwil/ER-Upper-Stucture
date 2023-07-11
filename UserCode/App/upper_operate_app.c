@@ -60,7 +60,7 @@ void StateManagemantTask(void const *argument)
 void StateManagemantTaskStart()
 {
 
-    osThreadDef(statemanagement, StateManagemantTask, osPriorityNormal, 0, 1024);
+    osThreadDef(statemanagement, StateManagemantTask, osPriorityNormal, 0, 512);
     osThreadCreate(osThread(statemanagement), NULL);
 }
 
@@ -402,20 +402,20 @@ void Joystick_Control()
 
     // 微调转速
     if (ReadJoystickButtons(msg_joystick_air_temp, Btn_JoystickL)) {
-        // xSemaphoreTake(Fire_ref.xMutex_servo_fire, portMAX_DELAY);
-        // Fire_ref.speed_servo_ref_left_limit -= 1.0;
-        // Fire_ref.speed_servo_ref_right_limit -= 1.0;
-        Fire_ref.position_servo_ref_pitch -= 5.0;
-        // xSemaphoreGive(Fire_ref.xMutex_servo_fire);
+        xSemaphoreTake(Fire_ref.xMutex_servo_fire, portMAX_DELAY);
+        Fire_ref.speed_servo_ref_left_limit -= 1.0;
+        Fire_ref.speed_servo_ref_right_limit -= 1.0;
+        // Fire_ref.position_servo_ref_pitch -= 5.0;
+        xSemaphoreGive(Fire_ref.xMutex_servo_fire);
     }
     if (ReadJoystickButtons(msg_joystick_air_temp, Btn_JoystickR)) {
-        // xSemaphoreTake(Fire_ref.xMutex_servo_fire, portMAX_DELAY);
-        // Fire_ref.speed_servo_ref_left_limit += 1.0;
-        // Fire_ref.speed_servo_ref_right_limit += 1.0;
-        Fire_ref.position_servo_ref_pitch += 5.0;
-        // xSemaphoreGive(Fire_ref.xMutex_servo_fire);
+        xSemaphoreTake(Fire_ref.xMutex_servo_fire, portMAX_DELAY);
+        Fire_ref.speed_servo_ref_left_limit += 1.0;
+        Fire_ref.speed_servo_ref_right_limit += 1.0;
+        // Fire_ref.position_servo_ref_pitch += 5.0;
+        xSemaphoreGive(Fire_ref.xMutex_servo_fire);
     }
-    // vTaskDelay(2);
+    vTaskDelay(2);
     // SetFireServoLimitRef((float)ReadJoystickKnobsLeft_x(Msg_joystick_air), &Fire_ref);
     // 移动至取环区
     if (ReadJoystickButtons(msg_joystick_air_temp, Btn_Btn4)) {
